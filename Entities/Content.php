@@ -28,7 +28,7 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     use Formable, JsGridable, HasAdminRoutes, HasAjaxRoutes, HasRouteSlug;
 
     protected $dispatchesEvents =[
-        'creating' => CreatingContent::class
+        'creating' => CreatingContent::class,
         'created' => ContentCreated::class
     ];
 
