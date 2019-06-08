@@ -136,13 +136,13 @@ class ContentFieldController extends BaseController implements HandlesModelContr
         $type = $this->contentType;
         $validator->after(function($validator) use ($type, $fieldFields){
             /**
-             * Modify the validator so we can check if 'title' or 'published' which are reserved 
+             * Modify the validator so we can check reserved field names 
              * (because they are added by the system on every content) are not used
              * and if the machine name is unique for that content type
              */
             $names = $type->getAllFieldsMachineNames();
             $name = $validator->getData()['machineName'];
-            if(in_array($name, (new Content)->getAddFormFields())){
+            if(in_array($name, Content::$reservedFieldNames)){
                 $validator->errors()->add($name, "Machine name $name is reserved by the system");
             }
             if(in_array($name, $names)){

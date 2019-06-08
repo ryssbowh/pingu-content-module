@@ -29,6 +29,7 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
 
     protected $dispatchesEvents =[
         'creating' => CreatingContent::class
+        'created' => ContentCreated::class
     ];
 
     protected $casts = [
@@ -44,6 +45,8 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     protected $fillable = ['title', 'published'];
 
     protected $visible = ['id', 'slug', 'title', 'content_type', 'creator', 'published', 'created_at', 'updated_at'];
+
+    public static $reservedFieldNames = ['id', 'slug', 'title', 'content_type_id', 'creator_id', 'published', 'created_at', 'updated_at'];
 
     public function generateSlug(?string $slug = null, $first = true)
     {

@@ -32,9 +32,17 @@ class DeleteContentTypePermissions
     public function handle($event)
     {
         $contentType = $event->contentType;
-        $perms = \Permissions::decodeContentTypePermsConfig($contentType);
+        $pluralName = Str::plural($contentType->machineName);
+        $perms = [
+            "create ",
+            "view any ",
+            "edit own ",
+            "delete own ",
+            "edit any ",
+            "delete any "
+        ];
         foreach($perms as $perm){
-            if($permission = Permission::findByName($perm)){
+            if($permission = Permission::findByName($perm.$pluralName)){
                 $permission->delete();
             }
         }

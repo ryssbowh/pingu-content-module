@@ -17,14 +17,7 @@ use Pingu\Forms\Form;
 
 class Content
 {
-	protected $permissionCheckers = [];
-
 	protected $contentFields = [];
-
-	public function __construct(Gate $gate)
-    {
-        $this->gate = $gate;
-    }
 
 	/**
 	 * Registers a type of content field
@@ -100,7 +93,6 @@ class Content
         foreach($type->fields as $field){
         	$this->createFieldValue($field, $content, $values[$field->machineName]);
         }
-        event(new ContentCreated($content));
         return $content;
 	}
 
