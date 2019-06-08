@@ -1,0 +1,107 @@
+<?php
+
+namespace Pingu\Content\Entities\Fields;
+
+use Pingu\Content\Contracts\ContentFieldContract;
+use Pingu\Content\Traits\ContentField;
+use Pingu\Core\Entities\BaseModel;
+use Pingu\Forms\Fields\Boolean;
+use Pingu\Forms\Fields\Number;
+use Pingu\Forms\Fields\Text;
+use Pingu\Forms\Traits\Formable;
+
+class FieldInteger extends BaseModel implements ContentFieldContract
+{
+    use ContentField, Formable;
+
+    protected $fillable = ['default'];
+
+    /**
+     * @inheritDoc
+     */
+    public function formAddFields()
+    {
+        return ['default'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function formEditFields()
+    {
+        return ['default'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fieldDefinitions()
+    {
+        return [
+            'default' => [
+                'type' => Number::class
+            ]
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validationRules()
+    {
+        return [
+            'default' => 'sometimes|integer',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validationMessages()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function friendlyName()
+    {
+    	return 'Integer';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fieldType()
+    {
+        return Number::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fieldDefinition()
+    {
+        return [
+            'default' => $this->default
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fieldValidationRules()
+    {
+        return ($this->required ? 'required|' : '') . 'integer';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fieldValidationMessages()
+    {
+        return [];
+    }
+}
+

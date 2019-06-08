@@ -1,0 +1,275 @@
+<?php
+
+namespace Pingu\Content\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\Validator;
+use Pingu\Content\Entities\ContentField;
+use Pingu\Content\Entities\ContentType;
+use Pingu\Content\Entities\Field;
+use Pingu\Content\Events\ContentFieldStoreValidator;
+use Pingu\Content\Events\ContentFieldUpdateValidator;
+use Pingu\Content\Exceptions\TypeParameterMissing;
+use Pingu\Core\Contracts\Controllers\HandlesModelContract;
+use Pingu\Core\Entities\BaseModel;
+use Pingu\Core\Http\Controllers\BaseController;
+use Pingu\Core\Traits\Controllers\HandlesModel;
+use Pingu\Forms\Contracts\FormableContract;
+use Pingu\Forms\Exceptions\ModelNotFormable;
+use Pingu\Forms\Fields\Text;
+use Pingu\Forms\FormModel;
+use Pingu\Forms\Renderers\Hidden;
+
+class ContentFieldController extends BaseController implements HandlesModelContract
+{
+    use HandlesModel;
+
+    protected $request;
+    protected $contentType;
+    protected $fieldType;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+        if($name = $request->route()->parameter(ContentType::routeSlug())){
+            $this->contentType = ContentType::findByName($name);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getModel(): string
+    {
+        return Field::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function beforeCreate()
+    {
+        $typeId = $this->request->input('type', false);
+        if(!$typeId){
+            throw new TypeParameterMissing('type', 'get');
+        }
+        $this->fieldType = ContentField::findOrFail($typeId);
+        $model = new $this->fieldType->class;
+
+        if(!$model instanceof FormableContract){
+            throw new ModelNotFormable($model);
+        }
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    protected function beforeStore()
+    {
+        $typeId = $this->request->post()['type'] ?? false;
+        if(!$typeId){
+            throw new TypeParameterMissing('type', 'post');
+        }
+        $this->fieldType = ContentField::findOrFail($typeId);
+        $model = new $this->fieldType->class;
+
+        if(!$model instanceof FormableContract){
+            throw new ModelNotFormable($model);
+        }
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    protected function getStoreUrl()
+    {
+        return ContentType::transformAdminUri('storeField', [$this->contentType], true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getStoreModel()
+    {
+        return $this->fieldType->class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function modifyCreateForm(FormModel $form)
+    {
+        $field = new Field;
+        $form->addFields($field->formAddFields(), $field)
+            ->moveFieldUp('machineName')
+            ->moveFieldUp('name');
+
+        $typeId = $this->request->input('type');
+
+        $form->addField('type', [
+            'type' => Text::class,
+            'renderer' => Hidden::class,
+            'default' => $typeId
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getStoreValidator(string $model)
+    {
+        $model = new $model;
+        $fields = $model->getAddFormFields();
+        $rules = array_intersect_key($model->getValidationRules(), array_flip($fields));
+        $rules = array_merge($rules, Field::$validationRules);
+        $messages = array_merge($model->getValidationMessages(), (new Field)->getValidationMessages());
+        $validator = \Validator::make($this->request->post(), $rules, $messages);
+        
+        $type = $this->contentType;
+        $validator->after(function($validator) use ($type){
+            /**
+             * Modify the validator so we can check if 'title' or 'published' which are reserved 
+             * (because they are added by the system on every content) are not used
+             * and if the machine name is unique for that content type
+             */
+            $names = $type->getAllFieldsMachineNames();
+            $name = $validator->getData()['machineName'];
+            if(in_array($name, ['title', 'published'])){
+                $validator->errors()->add($name, "Machine name $name is reserved by the system");
+            }
+            if(in_array($name, $names)){
+                $validator->errors()->add($name, "Machine name $name already exists for that content type");
+            }
+        });
+
+        event(new ContentFieldStoreValidator($validator, $type, $model));
+
+        return $validator;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function performStore(BaseModel $model, array $validated)
+    {
+        $field = new Field([
+            'name' => $validated['name'],
+            'machineName' => $validated['machineName']
+        ]);
+        unset($validated['name']);
+        unset($validated['machineName']);
+        $model->saveWithRelations($validated);
+        $field->content_type()->associate($this->contentType);
+        $model->field()->save($field);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onSuccessfullStore(BaseModel $field)
+    {
+        return redirect(ContentType::transformAdminUri('listFields', [$this->contentType], true));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onModelCreated(BaseModel $field)
+    {
+        \Notify::success($field::friendlyName().' field '.$field->field->name.' has been saved');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function addVariablesToCreateView(array &$with)
+    {
+        $with['title'] = 'Add a '.$this->fieldType->class::friendlyname().' field';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function addVariablesToEditView(array &$with, BaseModel $model)
+    {
+        $with['title'] = 'Edit field '.$model->field->name;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getEditModel(BaseModel $field)
+    {
+        return $field->instance;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function modifyEditForm(FormModel $form, BaseModel $field)
+    {
+        $form->addFields(['name'], $field->field)
+            ->moveFieldUp('name');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getUpdateValidator(BaseModel $model)
+    {
+        $fields = $model->getEditFormFields();
+        $rules = array_intersect_key($model->getValidationRules(), array_flip($fields));
+        $rules['name'] = (new Field)->getValidationRules()['name'];
+        $messages = array_merge($model->getValidationMessages(), (new Field)->getValidationMessages());
+        $validator = \Validator::make($this->request->post(), $rules, $messages);
+
+        event(new ContentFieldUpdateValidator($validator, $model));
+
+        return $validator;
+    }
+    /**
+     * @inheritDoc
+     */
+    protected function getUpdateUrl(BaseModel $field)
+    {
+        return $field->field::transformAdminUri('update', [$field->field], true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onSuccessfullUpdate(BaseModel $field)
+    {
+        return redirect($field->field->content_type::transformAdminUri('listFields', [$field->field->content_type], true));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function performUpdate(BaseModel $field, array $validated)
+    {
+        $field->field->name = $validated['name'];
+        $field->field->save();
+        unset($validated['name']);
+        return ($field->field->getChanges() or $field->saveWithRelations($validated));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onModelUpdatedWithoutChanges(BaseModel $field)
+    {
+        \Notify::info('No changes made to field '.$field->field->name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onModelUpdatedWithChanges(BaseModel $field)
+    {
+        \Notify::success('Field '.$field->field->name.' has been saved');
+    }
+
+}
+

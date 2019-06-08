@@ -1,0 +1,20 @@
+<?php
+
+return [
+    'name' => 'Content',
+    /**
+     * Permissions created and deleted with each content types, must be json valid
+     * Add more here if you need. $NAME$ is the machine name of the content type.
+     */
+    'content_type_permissions' => '[
+		"create $NAME$ contents",
+		"edit own $NAME$ contents",
+		"delete own $NAME$ contents",
+		"edit any $NAME$ contents",
+		"delete any $NAME$ contents"
+	]',
+	'content_types' => [
+		'titleField' => 'Title'
+	]
+];
+

@@ -1,0 +1,35 @@
+<?php
+
+namespace Pingu\Content\Entities;
+
+use Pingu\Content\Entities\Content;
+use Pingu\Content\Entities\Field;
+use Pingu\Core\Entities\BaseModel;
+
+class FieldValue extends BaseModel
+{
+    protected $fillable = ['value'];
+
+    protected $casts = [
+        'value' => 'array'
+    ];
+
+    /**
+     * Content relation
+     * @return Relation
+     */
+    public function content()
+    {
+    	return $this->belongsTo(Content::class);
+    }
+
+    /**
+     * Field relation
+     * @return Relation
+     */
+    public function field()
+    {
+    	return $this->belongsTo(Field::class);
+    }
+}
+

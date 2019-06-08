@@ -1,0 +1,187 @@
+<?php
+
+namespace Pingu\Content\Entities;
+
+use Pingu\Content\Events\ContentFieldCreated;
+use Pingu\Core\Contracts\Models\HasAdminRoutesContract;
+use Pingu\Core\Contracts\Models\HasAjaxRoutesContract;
+use Pingu\Core\Entities\BaseModel;
+use Pingu\Core\Traits\Models\HasAdminRoutes;
+use Pingu\Core\Traits\Models\HasAjaxRoutes;
+use Pingu\Forms\Contracts\FormableContract;
+use Pingu\Forms\Fields\Boolean;
+use Pingu\Forms\Fields\Text;
+use Pingu\Forms\Traits\Formable;
+
+class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesContract, FormableContract
+{
+    use HasAdminRoutes, HasAjaxRoutes, Formable;
+
+
+    protected $dispatchesEvents = [
+        'created' => ContentFieldCreated::class
+    ];
+
+    protected $fillable = ['editable', 'deletable', 'name', 'machineName','helper', 'required'];
+
+    protected $casts = [
+        'deletable' => 'boolean',
+        'editable' => 'boolean'
+    ];
+
+    protected $attributes = [
+        'deletable' => true,
+        'editable' => true,
+        'helper' => ''
+    ];
+
+    protected $with = ['instance'];
+
+    /**
+     * @inheritDoc
+     */
+    public function formAddFields()
+    {
+        return ['name', 'machineName', 'helper', 'required'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function formEditFields()
+    {
+        return ['name', 'helper', 'required'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fieldDefinitions()
+    {
+        return [
+            'name' => [
+                'type' => Text::class,
+                'required' => true
+            ],
+            'helper' => [
+                'type' => Text::class
+            ],
+            'required' => [
+                'type' => Boolean::class
+            ],
+            'machineName' => [
+                'required' => true,
+                'type' => Text::class,
+                'label' => 'Machine name',
+                'rendererAttributes' => [
+                    'class' => 'js-dashify',
+                    'data-dashifyfrom' => 'name'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validationRules()
+    {
+        return [
+            'name' => 'required|string',
+            'helper' => 'string',
+            'required' => 'boolean',
+            'machineName' => 'required|string'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validationMessages()
+    {
+        return [
+            'name.required' => 'Name is required',
+            'machineName.required' => 'Machine name is required'
+        ];
+    }
+
+    /**
+     * Morph this field into its instance
+     * @return Relation
+     */
+    public function instance()
+    {
+    	return $this->morphTo();
+    }
+
+    /**
+     * Gets this field content type relation
+     * @return Relation
+     */
+    public function content_type()
+    {
+    	return $this->belongsTo(ContentType::class);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function adminEditUri()
+    {
+        return 'content/field/{'.static::routeSlug().'}/edit';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function adminUpdateUri()
+    {
+        return 'content/field/{'.static::routeSlug().'}';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function ajaxDeleteUri()
+    {
+        return 'content/field/{'.static::routeSlug().'}';
+    }
+
+    /**
+     * Get the next weight for a field belonging to the same content type
+     * @return int
+     */
+    public function getNextWeight()
+    {
+        $last = $this->content_type->fields->last();
+        if(!$last) return 1;
+        return ($last->weight + 1);
+    }
+
+    /**
+     * Overrides save to add a default weight
+     * @param  array  $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        if(is_null($this->weight)){
+            $this->weight = $this->getNextWeight();
+        }
+        return parent::save();
+    }
+
+    /**
+     * Protect fields that can't be deleted
+     * @return bool
+     */
+    public function delete($force = false)
+    {
+        if(!$force and !$this->deletable){
+            throw new \Exception("This field can't be deleted");
+        }
+        $this->instance->delete();
+        return parent::delete();
+    }
+}
+

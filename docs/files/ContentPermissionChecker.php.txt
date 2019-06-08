@@ -1,0 +1,32 @@
+<?php
+
+namespace Pingu\Content;
+
+use Pingu\Content\Contracts\ContentPermissionCheckerContract;
+use Pingu\Content\Entities\Content;
+use Pingu\Content\Entities\ContentType;
+use Pingu\Permissions\Entities\Permission;
+use Pingu\Permissions\Exceptions\PermissionDoesNotExist;
+use Pingu\Permissions\Exceptions\UnauthorizedException;
+
+class ContentPermissionChecker
+{
+
+	/**
+	 * Checks creation permission
+	 * @param  ContentType $contentType
+	 * @return bool
+	 */
+	public function create(ContentType $contentType)
+	{
+		try{
+			$perm = Permission::findByName('create '.$contentType->machineName.' contents');
+			$model = \Permissions::getPermissionableModel();
+			if(!$model->hasPermissionTo($perm)){
+				throw UnauthorizedException::forPermissions([$perm]);
+			}
+		}
+		catch(PermissionDoesNotExist $e){}
+	}
+
+}

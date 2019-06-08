@@ -1,0 +1,34 @@
+<?php 
+
+namespace Pingu\Content\Traits;
+
+use Pingu\Content\Entities\ContentField as ContentFieldModel;
+use Pingu\Content\Entities\Field;
+use Pingu\Content\Events\ContentFieldCreated;
+
+trait ContentField
+{
+	/**
+	 * @inheritDoc
+	 */
+	public function field()
+	{
+		return $this->morphOne(Field::class, 'instance');
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function storeValue($value)
+	{
+		return $value;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function retrieveValue($value)
+	{
+		return $value;
+	}
+}
