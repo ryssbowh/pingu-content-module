@@ -2,7 +2,7 @@
 
 namespace Pingu\Content\Contracts;
 
-use Pingu\Forms\Contracts\FormableContract;
+use Pingu\Forms\Contracts\Models\FormableContract;
 
 interface ContentFieldContract extends FormableContract{
 

@@ -13,8 +13,9 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasAdminRoutes;
 use Pingu\Core\Traits\Models\HasAjaxRoutes;
 use Pingu\Core\Traits\Models\HasRouteSlug;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Traits\Formable;
+use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Support\Types\Text;
+use Pingu\Forms\Traits\Models\Formable;
 use Pingu\Jsgrid\Contracts\Models\JsGridableContract;
 use Pingu\Jsgrid\Fields\Text as JsGridText;
 use Pingu\Jsgrid\Traits\Models\JsGridable;
@@ -65,25 +66,38 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
     {
         return [
             'name' => [
-                'type' => Text::class,
-                'required' => true,
+                'field' => TextInput::class,
+                'options' => [
+                    'type' => Text::class
+                ],
+                'attributes' => [
+                    'required' => true
+                ]
             ],
             'description' => [
-                'type' => Text::class
+                'field' => TextInput::class,
+                'options' => [
+                    'type' => Text::class
+                ],
             ],
             'titleField' => [
-                'type' => Text::class,
-                'label' => 'Title field name',
-                'required' => true,
-                'default' => config('content.content_types.titleField','Title')
+                'field' => TextInput::class,
+                'options' => [
+                    'label' => 'Title field name',
+                    'default' => config('content.content_types.titleField','Title'),
+                    'type' => Text::class
+                ],
+                'attributes' => [
+                    'required' => true
+                ]
             ],
             'machineName' => [
-                'required' => true,
-                'type' => Text::class,
-                'label' => 'Machine Name',
-                'rendererAttributes' => [
+                'field' => TextInput::class,
+                'attributes' => [
                     'class' => 'js-dashify',
-                    'data-dashifyfrom' => 'name'
+                    'data-dashifyfrom' => 'name',
+                    'required' => true,
+                    'type' => Text::class
                 ]
             ]
         ];
@@ -126,7 +140,7 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
     /**
      * @inheritDoc
      */
-    public static function jsGridFields()
+    public function jsGridFields()
     {
     	return [
     		'name' => [

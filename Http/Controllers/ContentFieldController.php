@@ -16,11 +16,12 @@ use Pingu\Core\Contracts\Controllers\HandlesModelContract;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Http\Controllers\BaseController;
 use Pingu\Core\Traits\Controllers\HandlesModel;
-use Pingu\Forms\Contracts\FormableContract;
+use Pingu\Forms\Contracts\FormContract;
+use Pingu\Forms\Contracts\Models\FormableContract;
 use Pingu\Forms\Exceptions\ModelNotFormable;
 use Pingu\Forms\Fields\Text;
-use Pingu\Forms\FormModel;
-use Pingu\Forms\Renderers\Hidden;
+use Pingu\Forms\Support\Fields\Hidden;
+use Pingu\Forms\Support\ModelForm;
 
 class ContentFieldController extends BaseController implements HandlesModelContract
 {
@@ -99,19 +100,21 @@ class ContentFieldController extends BaseController implements HandlesModelContr
     /**
      * @inheritDoc
      */
-    protected function modifyCreateForm(FormModel $form)
+    protected function modifyCreateForm(ModelForm $form)
     {
         $field = new Field;
-        $form->addFields($field->getAddFormFields(), $field)
+        $form->addModelFields($field->getAddFormFields(), $field)
             ->moveFieldUp('machineName')
-            ->moveFieldUp('name');
+            ->moveFieldUp('name')
+            ->moveFieldDown('submit');
 
         $type = $this->request->input('type');
 
         $form->addField('type', [
-            'type' => Text::class,
-            'renderer' => Hidden::class,
-            'default' => $type
+            'field' => Hidden::class,
+            'options' => [
+                'default' => $type
+            ]
         ]);
     }
 
@@ -212,10 +215,11 @@ class ContentFieldController extends BaseController implements HandlesModelContr
     /**
      * @inheritDoc
      */
-    protected function modifyEditForm(FormModel $form, BaseModel $field)
+    protected function modifyEditForm(ModelForm $form, BaseModel $field)
     {
-        $form->addFields($field->field->getEditFormFields(), $field->field)
-            ->moveFieldUp('name');
+        $form->addModelFields($field->field->getEditFormFields(), $field->field)
+            ->moveFieldUp('name')
+            ->moveFieldDown('submit');
     }
 
     /**

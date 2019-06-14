@@ -11,9 +11,9 @@ use Pingu\Content\Entities\FieldValue;
 use Pingu\Content\Events\ContentCreated;
 use Pingu\Content\Exceptions\ContentContractMissing;
 use Pingu\Content\Exceptions\ContentFieldAlreadyExists;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Form;
+use Pingu\Content\Forms\AddContentForm;
+use Pingu\Content\Forms\EditContentForm;
+use Pingu\Forms\Support\Fields\Submit;
 
 class Content
 {
@@ -140,28 +140,16 @@ class Content
 	 */
 	public function getCreateContentForm(ContentType $type)
 	{
-		$form = new Form(
-            'create-content',
-            ['url' => ContentModel::transformAdminUri('store', [$type], true), 'method' => 'POST'],
-            ['contentType' => $type],
-            ['title' => [
-                'type' => Text::class,
-                'required' => true,
-                'label' => $type->titleField
-                ]
-            ]
-        );
+		$form = new AddContentForm($type);
 
         foreach($type->fields as $field){
-            $definition = $field->buildContentDefinition();
-            $definition = array_merge($field->instance->fieldDefinition(), $definition);
+            $definition = $field->buildFieldDefinition();
+            $definition = array_replace_recursive($field->instance->fieldDefinition(), $definition);
             $form->addField($field->machineName, $definition);
         }
 
-        $form->addField('published',[
-            'type' => Boolean::class
-        ]);
-        $form->end();
+        $form->moveFieldDown('published')
+        	->moveFieldDown('submit');
         
         return $form;
 	}
@@ -173,32 +161,18 @@ class Content
 	 */
 	public function getEditContentForm(ContentModel $content)
 	{
-		$form = new Form(
-            'edit-content',
-            ['url' => ContentModel::transformAdminUri('update', [$content], true), 'method' => 'PUT'],
-            ['contentType' => $content->content_type],
-            ['title' => [
-                'type' => Text::class,
-                'required' => true,
-                'default' => $content->title,
-                'label' => $content->content_type->titleField
-                ]
-            ]
-        );
+		$form = new EditContentForm($content);
 
         foreach($content->values as $value){
             $field = $value->field;
-            $definition = $field->buildContentDefinition($value->value);
-            $definition = array_merge($field->instance->fieldDefinition(), $definition);
+            $definition = $field->buildFieldDefinition($value->value);
+            $definition = array_replace_recursive($field->instance->fieldDefinition(), $definition);
             $form->addField($field->machineName, $definition);
         }
 
-        $form->addField('published',[
-            'type' => Boolean::class,
-            'default' => $content->published
-        ]);
-
-        $form->end();
+        $form->moveFieldDown('published')
+        	->moveFieldDown('submit')
+        	->moveFieldDown('link');
         
         return $form;
 	}

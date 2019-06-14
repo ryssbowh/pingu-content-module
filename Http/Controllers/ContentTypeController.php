@@ -9,6 +9,7 @@ use Pingu\Content\Entities\ContentField;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Field;
 use Pingu\Content\Entities\Fields\FieldText;
+use Pingu\Content\Forms\ContentFieldForm;
 use Pingu\Core\Contracts\Controllers\HandlesModelContract;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Http\Controllers\BaseController;
@@ -42,21 +43,9 @@ class ContentTypeController extends BaseController implements HandlesModelContra
         foreach(\Content::getRegisteredContentFields() as $name => $class){
             $items[$name] = $class::friendlyName();
         }
-        $fields = [
-            'type' => [
-                'type' => Serie::class,
-                'label' => 'Add new field',
-                'items' => $items,
-                'allowNoValue' => false
-            ]
-        ];
-        $form = new Form(
-            'add-content-type-field',
-            ['url' => ContentType::transformAdminUri('addField', [$type], true), 'method' => 'get', 'class' => 'mt-3'],
-            [],
-            $fields
-        );
-        $form->end();
+
+        $url = ContentType::transformAdminUri('addField', [$type], true);
+        $form = new ContentFieldForm($url, $items);
 
         return view('content::listFields')->with([
             'fields' => $type->fields,

@@ -9,11 +9,10 @@ use Pingu\Core\Contracts\Models\HasAjaxRoutesContract;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasAdminRoutes;
 use Pingu\Core\Traits\Models\HasAjaxRoutes;
-use Pingu\Core\Traits\Models\HasRouteSlug;
-use Pingu\Forms\Contracts\FormableContract;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Traits\Formable;
+use Pingu\Core\Traits\Models\HasRouteSlug;;
+use Pingu\Forms\Contracts\Models\FormableContract;
+use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Traits\Models\Formable;
 
 class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesContract, FormableContract
 {
@@ -61,17 +60,20 @@ class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesCo
     {
         return [
             'name' => [
-                'type' => Text::class,
-                'required' => true
+                'field' => TextInput::class,
+                'attributes' => [
+                    'required' => true
+                ]
             ],
             'helper' => [
-                'type' => Text::class
+                'field' => TextInput::class
             ],
             'machineName' => [
-                'required' => true,
-                'type' => Text::class,
-                'label' => 'Machine name',
-                'rendererAttributes' => [
+                'field' => TextInput::class,
+                'options' => [
+                    'required' => true
+                ],
+                'attributes' => [
                     'class' => 'js-dashify',
                     'data-dashifyfrom' => 'name'
                 ]
@@ -102,14 +104,18 @@ class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesCo
         ];
     }
 
-    public function buildContentDefinition($value = null)
+    public function buildFieldDefinition($value = null)
     {
         return [
-            'type' => $this->instance->fieldType(),
-            'label' => $this->name,
-            'helper' => $this->helper,
-            'default' => $value,
-            'required' => $this->instance->definesField('required') ? $this->instance->required : ''
+            'field' => $this->instance->fieldType(),
+            'options' => [
+                'label' => $this->name,
+                'helper' => $this->helper,
+                'default' => $value
+            ],
+            'attributes' => [
+                'required' => $this->instance->definesField('required') ? $this->instance->required : ''
+            ]
         ];
     }
 

@@ -12,13 +12,13 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasAdminRoutes;
 use Pingu\Core\Traits\Models\HasAjaxRoutes;
 use Pingu\Core\Traits\Models\HasRouteSlug;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Model;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Traits\Formable;
+use Pingu\Forms\Support\Fields\Checkbox;
+use Pingu\Forms\Support\Fields\ModelSelect;
+use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Traits\Models\Formable;
 use Pingu\Jsgrid\Contracts\Models\JsGridableContract;
-use Pingu\Jsgrid\Fields\Checkbox;
-use Pingu\Jsgrid\Fields\Model as JsGridModel;
+use Pingu\Jsgrid\Fields\Checkbox as JsGridCheckbox;
+use Pingu\Jsgrid\Fields\ModelSelect as JsGridModelSelect;
 use Pingu\Jsgrid\Fields\Text as JsGridText;
 use Pingu\Jsgrid\Traits\Models\JsGridable;
 use Pingu\User\Entities\User;
@@ -106,22 +106,28 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     {
         return [
     		'title' => [
-    			'type' => Text::class,
-                'required' => true
+    			'field' => TextInput::class,
+                'attributes' => [
+                    'required' => true
+                ]
     		],
     		'published' => [
-    			'type' => Boolean::class
+    			'field' => Checkbox::class
     		],
             'content_type' => [
-                'type' => Model::class,
-                'model' => ContentType::class,
-                'textField' => 'name',
-                'label' => 'Type'
+                'field' => ModelSelect::class,
+                'options' => [
+                    'label' => 'Type',
+                    'model' => ContentType::class,
+                    'textField' => 'name',
+                ]
             ],
             'creator' => [
-                'type' => Model::class,
-                'model' => User::class,
-                'textField' => 'name'
+                'field' => ModelSelect::class,
+                'options' => [
+                    'model' => User::class,
+                    'textField' => 'name'
+                ]
             ]
     	];
     }
@@ -177,22 +183,26 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     /**
      * @inheritDoc
      */
-    public static function jsGridFields()
+    public function jsGridFields()
     {
         return [
             'title' => [
                 'type' => JsGridText::class
             ],
             'content_type' => [
-                'type' => JsGridModel::class,
-                'editing' => false
+                'type' => JsGridModelSelect::class,
+                'options' => [
+                    'editing' => false
+                ]
             ],
             'creator' => [
-                'type' => JsGridModel::class,
-                'editing' => false
+                'type' => JsGridModelSelect::class,
+                'options' => [
+                    'editing' => false
+                ]
             ],
             'published' => [
-                'type' => Checkbox::class
+                'type' => JsGridCheckbox::class
             ]
         ];
     }
