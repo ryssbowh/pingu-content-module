@@ -55,14 +55,6 @@ class ContentInstall extends Migration
             $table->timestamps();
         });
 
-        // Schema::create('content_type_field', function(Blueprint $table){
-        //     $table->increments('id');
-        //     $table->integer('content_type_id')->unsigned()->index();
-        //     $table->foreign('content_type_id')->references('id')->on('content_types');
-        //     $table->integer('field_id')->unsigned()->index();
-        //     $table->foreign('field_id')->references('id')->on('fields');
-        // });
-
         Schema::create('field_booleans', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('default');
@@ -83,20 +75,6 @@ class ContentInstall extends Migration
             $table->boolean('required');
             $table->timestamps();
         });
-
-        // Schema::create('field_models', function (Blueprint $table) {
-        //     $table->increments('id');
-        //     $table->string('name');
-        //     $table->boolean('required');
-        //     $table->string('class');
-        //     $table->string('model');
-        //     $table->string('allowNoValue');
-        //     $table->string('noValueLabel');
-        //     $table->json('fields_text');
-        //     $table->string('default');
-        //     $table->string('helper');
-        //     $table->timestamps();
-        // });
 
         Schema::create('field_integers', function (Blueprint $table) {
             $table->increments('id');
