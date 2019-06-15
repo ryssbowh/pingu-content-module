@@ -5,7 +5,6 @@ namespace Pingu\Content\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
-use Illuminate\Support\ServiceProvider;
 use Pingu\Content\Content;
 use Pingu\Content\Entities\Fields\FieldBoolean;
 use Pingu\Content\Entities\Fields\FieldDatetime;
@@ -20,8 +19,9 @@ use Pingu\Content\Http\Middleware\DeletableContentField;
 use Pingu\Content\Http\Middleware\EditableContentField;
 use Pingu\Content\Listeners\ContentTypeCreated as ContentTypeCreatedListener;
 use Pingu\Content\Policies\ContentPolicy;
+use Pingu\Core\Support\ModuleServiceProvider;
 
-class ContentServiceProvider extends ServiceProvider
+class ContentServiceProvider extends ModuleServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -45,7 +45,7 @@ class ContentServiceProvider extends ServiceProvider
      */
     public function boot(Router $router, Gate $gate)
     {
-        $this->registerModelSlugs();
+        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'content');
@@ -82,14 +82,6 @@ class ContentServiceProvider extends ServiceProvider
             FieldTextLong::class,
             FieldUrl::class
         ]);
-    }
-
-    /**
-     * Registers all the slugs for this module's models
-     */
-    public function registerModelSlugs()
-    {
-        \ModelRoutes::registerSlugsFromPath(realpath(__DIR__.'/../'.$this->modelFolder));
     }
 
     /**
