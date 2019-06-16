@@ -15,7 +15,7 @@ use Pingu\Content\Entities\Field;
 |
 */
 
-Route::get(ContentType::getAjaxUri('index'), ['uses' => 'AjaxContentTypeController@index'])
+Route::get(ContentType::getAjaxUri('index'), ['uses' => 'ContentTypeJsGridController@jsGridIndex'])
 	->middleware('can:view content types');
 
 Route::delete(ContentType::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeController@destroy'])
@@ -28,5 +28,5 @@ Route::delete(Field::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeFieldsCont
 	->middleware('can:edit content types')
 	->middleware('deletableContentField');
 
-Route::get(Content::getAjaxUri('index'), ['uses' => 'AjaxContentController@index'])
+Route::get(Content::getAjaxUri('index'), ['uses' => 'ContentJsGridController@jsGridIndex'])
 	->middleware('can:view content');

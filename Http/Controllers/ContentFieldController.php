@@ -48,7 +48,7 @@ class ContentFieldController extends BaseController implements HandlesModelContr
     }
 
     /**
-     * @inheritDoc
+     * Loads the type parameter as ContentField instance to this class
      */
     protected function beforeCreate()
     {
@@ -56,16 +56,11 @@ class ContentFieldController extends BaseController implements HandlesModelContr
         if(!$type){
             throw new ParameterMissing('type', 'get');
         }
-        $fieldType = \Content::getRegisteredContentField($type);
-        $this->fieldType = new $fieldType;
-
-        if(!$this->fieldType instanceof FormableContract){
-            throw new ModelNotFormable($this->fieldType);
-        }
+        $this->fieldType = \Content::getRegisteredContentField($type);
     }
     
     /**
-     * @inheritDoc
+     * Loads the type parameter as ContentField instance to this class
      */
     protected function beforeStore()
     {
@@ -73,12 +68,7 @@ class ContentFieldController extends BaseController implements HandlesModelContr
         if(!$type){
             throw new ParameterMissing('type', 'post');
         }
-        $fieldType = \Content::getRegisteredContentField($type);
-        $this->fieldType = new $fieldType;
-
-        if(!$this->fieldType instanceof FormableContract){
-            throw new ModelNotFormable($this->fieldType);
-        }
+        $this->fieldType = \Content::getRegisteredContentField($type);
     }
     
     /**
@@ -110,20 +100,14 @@ class ContentFieldController extends BaseController implements HandlesModelContr
 
         $type = $this->request->input('type');
 
-        $form->addField('type', [
-            'field' => Hidden::class,
-            'options' => [
-                'default' => $type
-            ]
-        ]);
+        $form->addHiddenField('type', $type);
     }
 
     /**
      * @inheritDoc
      */
-    protected function getStoreValidator(string $model)
+    protected function getStoreValidator(BaseModel $model)
     {
-        $model = new $model;
         $field = new Field;
         $fieldFields = $field->getAddFormFields();
         $rules = array_merge(

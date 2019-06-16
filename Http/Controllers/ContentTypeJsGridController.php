@@ -20,9 +20,9 @@ use Pingu\Forms\Form;
 use Pingu\Jsgrid\Contracts\Controllers\JsGridContract;
 use Pingu\Jsgrid\Traits\Controllers\JsGrid;
 
-class ContentTypeController extends BaseController implements HandlesModelContract
+class ContentTypeJsGridController extends BaseController implements HandlesModelContract, JsGridContract
 {
-    use HandlesModel;
+    use HandlesModel, JsGrid;
 
     /**
      * @inheritDoc
@@ -33,32 +33,39 @@ class ContentTypeController extends BaseController implements HandlesModelContra
     }
 
     /**
-     * List all fields for a content type
-     * @return Response
+     * @inheritDoc
      */
-    public function listFields(Request $request, ContentType $type)
+    public function index(Request $request)
     {
-        \ContextualLinks::addModelLinks($type);
-        $items = [];
-        foreach(\Content::getRegisteredContentFields() as $name => $class){
-            $items[$name] = $class::friendlyName();
-        }
-
-        $url = ContentType::transformAdminUri('addField', [$type], true);
-        $form = new ContentFieldForm($url, $items);
-
-        return view('content::listFields')->with([
-            'fields' => $type->fields,
-            'contentType' => $type,
-            'form' => $form
-        ]);
+        $options['jsgrid'] = $this->buildJsGridView($request);
+        $options['title'] = str_plural(ContentType::friendlyName());
+        $options['canSeeAddLink'] = Auth::user()->can('add content types');
+        $options['addLink'] = ContentType::getAdminUri('create', true);
+        
+        return view('pages.listModel-jsGrid', $options);
     }
 
     /**
      * @inheritDoc
      */
-    protected function onSuccessfullStore(BaseModel $model)
+    protected function canClick()
     {
-        return redirect(ContentType::transformAdminUri('listFields', [$model], true));
+        return Auth::user()->can('edit content types');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function canDelete()
+    {
+        return Auth::user()->can('delete content types');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function canEdit()
+    {
+        return $this->canClick();
     }
 }

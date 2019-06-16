@@ -13,6 +13,9 @@ use Pingu\Content\Exceptions\ContentContractMissing;
 use Pingu\Content\Exceptions\ContentFieldAlreadyExists;
 use Pingu\Content\Forms\AddContentForm;
 use Pingu\Content\Forms\EditContentForm;
+use Pingu\Forms\Contracts\Models\FormableContract;
+use Pingu\Forms\Exceptions\ModelNotFormable;
+use Pingu\Forms\Support\Field as FormField;
 use Pingu\Forms\Support\Fields\Submit;
 
 class Content
@@ -66,13 +69,18 @@ class Content
 	 * @param  string $name
 	 * @return string
 	 * @throws  ContentFieldNotFound
+	 * @throws  ModelNotFormable
 	 */
 	public function getRegisteredContentField(string $name)
 	{
 		if(!isset($this->contentFields[$name])){
 			throw ContentFieldNotRegistered::create($name);
 		}
-		return $this->contentFields[$name];
+		$contentField = new $this->contentFields[$name];
+		if(!$contentField instanceof FormableContract){
+            throw new ModelNotFormable($contentField);
+        }
+		return $contentField;
 	}
 
 	/**
@@ -145,7 +153,8 @@ class Content
         foreach($type->fields as $field){
             $definition = $field->buildFieldDefinition();
             $definition = array_replace_recursive($field->instance->fieldDefinition(), $definition);
-            $form->addField($field->machineName, $definition);
+            $fieldClass = FormField::buildFieldClass($field->machineName, $definition);
+            $form->addField($field->machineName, $fieldClass);
         }
 
         $form->moveFieldDown('published')
@@ -167,7 +176,8 @@ class Content
             $field = $value->field;
             $definition = $field->buildFieldDefinition($value->value);
             $definition = array_replace_recursive($field->instance->fieldDefinition(), $definition);
-            $form->addField($field->machineName, $definition);
+            $fieldClass = FormField::buildFieldClass($field->machineName, $definition);
+            $form->addField($field->machineName, $fieldClass);
         }
 
         $form->moveFieldDown('published')

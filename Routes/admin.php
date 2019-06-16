@@ -19,7 +19,7 @@ use Pingu\Content\Entities\Field;
 /**
  * Content types
  */
-Route::get(ContentType::getAdminUri('index'), ['uses' => 'ContentTypeController@index'])
+Route::get(ContentType::getAdminUri('index'), ['uses' => 'ContentTypeJsGridController@index'])
 	->name('content.admin.contentTypes')
 	->middleware('can:view content types');
 Route::get(ContentType::getAdminUri('create'), ['uses' => 'ContentTypeController@create'])
@@ -51,7 +51,7 @@ Route::put(Field::getAdminUri('update'), ['uses' => 'ContentFieldController@upda
 /**
  * Content
  */
-Route::get(Content::getAdminUri('index'), ['uses' => 'ContentController@index'])
+Route::get(Content::getAdminUri('index'), ['uses' => 'ContentJsGridController@index'])
 	->name('content.admin.content')
 	->middleware('can:view content');
 
