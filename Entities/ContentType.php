@@ -41,7 +41,7 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
 
     protected $fillable = ['name', 'machineName','description', 'titleField'];
 
-    protected $visible = ['id', 'name', 'machineName','description'];
+    protected $visible = ['id', 'name', 'machineName','description', 'titleField'];
 
     /**
      * @inheritDoc
@@ -145,7 +145,10 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
     	return [
     		'name' => [
     			'type' => JsGridText::class
-    		]
+    		],
+            'description' => [
+                'type' => JsGridText::class
+            ]
     	];
     }
 

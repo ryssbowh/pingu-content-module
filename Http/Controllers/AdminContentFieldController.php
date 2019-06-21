@@ -12,10 +12,8 @@ use Pingu\Content\Entities\Field;
 use Pingu\Content\Events\ContentFieldStoreValidator;
 use Pingu\Content\Events\ContentFieldUpdateValidator;
 use Pingu\Content\Exceptions\ParameterMissing;
-use Pingu\Core\Contracts\Controllers\HandlesModelContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Core\Traits\Controllers\HandlesModel;
+use Pingu\Core\Http\Controllers\AdminModelController;
 use Pingu\Forms\Contracts\FormContract;
 use Pingu\Forms\Contracts\Models\FormableContract;
 use Pingu\Forms\Exceptions\ModelNotFormable;
@@ -23,20 +21,18 @@ use Pingu\Forms\Fields\Text;
 use Pingu\Forms\Support\Fields\Hidden;
 use Pingu\Forms\Support\ModelForm;
 
-class ContentFieldController extends BaseController implements HandlesModelContract
+class AdminContentFieldController extends AdminModelController
 {
-    use HandlesModel;
-
     protected $request;
     protected $contentType;
     protected $fieldType;
 
     public function __construct(Request $request)
     {
-        $this->request = $request;
         if($name = $request->route()->parameter(ContentType::routeSlug())){
             $this->contentType = ContentType::findByName($name);
         }
+        parent::__construct($request);
     }
 
     /**

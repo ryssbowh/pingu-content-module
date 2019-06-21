@@ -10,24 +10,18 @@ use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Field;
 use Pingu\Content\Entities\Fields\FieldText;
 use Pingu\Content\Forms\ContentFieldForm;
-use Pingu\Core\Contracts\Controllers\HandlesModelContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Core\Traits\Controllers\HandlesModel;
 use Pingu\Forms\Fields\Model;
 use Pingu\Forms\Fields\Serie;
 use Pingu\Forms\Form;
-use Pingu\Jsgrid\Contracts\Controllers\JsGridContract;
-use Pingu\Jsgrid\Traits\Controllers\JsGrid;
+use Pingu\Jsgrid\Http\Controllers\JsGridController;
 
-class ContentTypeJsGridController extends BaseController implements HandlesModelContract, JsGridContract
+class JsGridContentTypeController extends JsGridController
 {
-    use HandlesModel, JsGrid;
-
     /**
      * @inheritDoc
      */
-    public function getModel(): string
+    public function getModel()
     {
         return ContentType::class;
     }

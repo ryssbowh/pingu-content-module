@@ -14,19 +14,28 @@ use Pingu\Content\Entities\Field;
 | contains the "ajax" middleware group.
 |
 */
-
-Route::get(ContentType::getAjaxUri('index'), ['uses' => 'ContentTypeJsGridController@jsGridIndex'])
+	
+/**
+ * Content types
+ */
+Route::get(ContentType::getAjaxUri('index'), ['uses' => 'JsGridContentTypeController@jsGridIndex'])
 	->middleware('can:view content types');
-
 Route::delete(ContentType::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeController@destroy'])
 	->middleware('can:delete content types');
-
 Route::patch(ContentType::getAjaxUri('patchFields'), ['uses' => 'AjaxContentTypeFieldsController@patch'])
 	->middleware('can:edit content types');
+Route::put(ContentType::getAjaxUri('update'), ['uses' => 'AjaxContentTypeController@update'])
+	->middleware('can:edit content types');
 
+/**
+ * Content Fields
+ */
 Route::delete(Field::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeFieldsController@delete'])
 	->middleware('can:edit content types')
 	->middleware('deletableContentField');
 
-Route::get(Content::getAjaxUri('index'), ['uses' => 'ContentJsGridController@jsGridIndex'])
+/**
+ * Content
+ */
+Route::get(Content::getAjaxUri('index'), ['uses' => 'JsGridContentController@jsGridIndex'])
 	->middleware('can:view content');

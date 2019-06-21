@@ -19,53 +19,53 @@ use Pingu\Content\Entities\Field;
 /**
  * Content types
  */
-Route::get(ContentType::getAdminUri('index'), ['uses' => 'ContentTypeJsGridController@index'])
+Route::get(ContentType::getAdminUri('index'), ['uses' => 'JsGridContentTypeController@index'])
 	->name('content.admin.contentTypes')
 	->middleware('can:view content types');
-Route::get(ContentType::getAdminUri('create'), ['uses' => 'ContentTypeController@create'])
+Route::get(ContentType::getAdminUri('create'), ['uses' => 'AdminContentTypeController@create'])
 	->name('content.admin.contentTypes.create')
 	->middleware('can:add content types');
-Route::post(ContentType::getAdminUri('store'), ['uses' => 'ContentTypeController@store'])
+Route::post(ContentType::getAdminUri('store'), ['uses' => 'AdminContentTypeController@store'])
 	->middleware('can:add content types');
-Route::get(ContentType::getAdminUri('edit'), ['uses' => 'ContentTypeController@edit'])
+Route::get(ContentType::getAdminUri('edit'), ['uses' => 'AdminContentTypeController@edit'])
 	->middleware('can:edit content types');
-Route::put(ContentType::getAdminUri('update'), ['uses' => 'ContentTypeController@update'])
+Route::put(ContentType::getAdminUri('update'), ['uses' => 'AdminContentTypeController@update'])
 	->middleware('can:add content types');
-Route::get(ContentType::getAdminUri('listFields'), ['uses' => 'ContentTypeController@listFields'])
+Route::get(ContentType::getAdminUri('listFields'), ['uses' => 'AdminContentTypeController@listFields'])
 	->middleware('can:view content types');
 
 /**
  * Content type fields
  */
-Route::get(ContentType::getAdminUri('addField'), ['uses' => 'ContentFieldController@create'])
+Route::get(ContentType::getAdminUri('addField'), ['uses' => 'AdminContentFieldController@create'])
 	->middleware('can:edit content types');
-Route::post(ContentType::getAdminUri('storeField'), ['uses' => 'ContentFieldController@store'])
+Route::post(ContentType::getAdminUri('storeField'), ['uses' => 'AdminContentFieldController@store'])
 	->middleware('can:edit content types');
-Route::get(Field::getAdminUri('edit'), ['uses' => 'ContentFieldController@edit'])
+Route::get(Field::getAdminUri('edit'), ['uses' => 'AdminContentFieldController@edit'])
 	->middleware('can:edit content types')
 	->middleware('editableContentField');
-Route::put(Field::getAdminUri('update'), ['uses' => 'ContentFieldController@update'])
+Route::put(Field::getAdminUri('update'), ['uses' => 'AdminContentFieldController@update'])
 	->middleware('can:edit content types')
 	->middleware('editableContentField');
 
 /**
  * Content
  */
-Route::get(Content::getAdminUri('index'), ['uses' => 'ContentJsGridController@index'])
+Route::get(Content::getAdminUri('index'), ['uses' => 'JsGridContentController@index'])
 	->name('content.admin.content')
 	->middleware('can:view content');
 
-Route::get(Content::getAdminUri('create'), ['uses' => 'ContentController@create'])
+Route::get(Content::getAdminUri('create'), ['uses' => 'AdminContentController@create'])
 	->middleware('can:create,'.ContentType::routeSlug());
-Route::get(Content::getAdminUri('edit'), ['uses' => 'ContentController@edit'])
+Route::get(Content::getAdminUri('edit'), ['uses' => 'AdminContentController@edit'])
 	->middleware('can:edit-content,'.Content::routeSlug());
 
-Route::post(Content::getAdminUri('store'), ['uses' => 'ContentController@store'])
+Route::post(Content::getAdminUri('store'), ['uses' => 'AdminContentController@store'])
 	->middleware('can:create-content,'.ContentType::routeSlug());
-Route::put(Content::getAdminUri('update'), ['uses' => 'ContentController@update'])
+Route::put(Content::getAdminUri('update'), ['uses' => 'AdminContentController@update'])
 	->middleware('can:edit-content,'.Content::routeSlug());
 
-Route::get(Content::getAdminUri('confirmDestroy'), ['uses' => 'ContentController@confirmDestroy'])
+Route::get(Content::getAdminUri('confirmDestroy'), ['uses' => 'AdminContentController@confirmDestroy'])
 	->middleware('can:delete-content,'.Content::routeSlug());
-Route::delete(Content::getAdminUri('destroy'), ['uses' => 'ContentController@destroy'])
+Route::delete(Content::getAdminUri('destroy'), ['uses' => 'AdminContentController@destroy'])
 	->middleware('can:delete-content,'.Content::routeSlug());

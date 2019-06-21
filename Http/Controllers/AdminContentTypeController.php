@@ -2,28 +2,15 @@
 
 namespace Pingu\Content\Http\Controllers;
 
-use Auth;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pingu\Content\Entities\ContentField;
 use Pingu\Content\Entities\ContentType;
-use Pingu\Content\Entities\Field;
-use Pingu\Content\Entities\Fields\FieldText;
 use Pingu\Content\Forms\ContentFieldForm;
-use Pingu\Core\Contracts\Controllers\HandlesModelContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Core\Traits\Controllers\HandlesModel;
-use Pingu\Forms\Fields\Model;
-use Pingu\Forms\Fields\Serie;
+use Pingu\Core\Http\Controllers\AdminModelController;
 use Pingu\Forms\Form;
-use Pingu\Jsgrid\Contracts\Controllers\JsGridContract;
-use Pingu\Jsgrid\Traits\Controllers\JsGrid;
 
-class ContentTypeController extends BaseController implements HandlesModelContract
+class AdminContentTypeController extends AdminModelController
 {
-    use HandlesModel;
-
     /**
      * @inheritDoc
      */
@@ -34,9 +21,10 @@ class ContentTypeController extends BaseController implements HandlesModelContra
 
     /**
      * List all fields for a content type
+     * 
      * @return Response
      */
-    public function listFields(Request $request, ContentType $type)
+    public function listFields(ContentType $type)
     {
         \ContextualLinks::addModelLinks($type);
         $items = [];
