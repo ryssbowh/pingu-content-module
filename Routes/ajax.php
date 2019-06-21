@@ -32,7 +32,7 @@ Route::put(ContentType::getAjaxUri('update'), ['uses' => 'AjaxContentTypeControl
  */
 Route::delete(Field::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeFieldsController@delete'])
 	->middleware('can:edit content types')
-	->middleware('deletableContentField');
+	->middleware('deletableModel:'.Field::routeSlug());
 
 /**
  * Content

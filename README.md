@@ -7,7 +7,7 @@
 
 ### Content types
 
-They are regular entries in the database and hold only a name. Once created fields can be added to them.
+They are regular entries in the database and hold a name and a title field. Once created fields can be added to them.
 
 When they are created, the permissions for access/edit/delete will be automatically created as well (see Content config) and given to the role 4 (Admin).
 
@@ -22,12 +22,12 @@ You can any field you want in this table, the only required field is `default` (
 
 You will need to register your fields through the facade `Content::registerContentField` in your service provider.
 
-In the field table you'll find all instances of field for all content types, when retrieving a Field from that table, to access the actual field (Text, Boolean etc), call `$field->instance`.
+In the field table you'll find all instances of field for all content types, when retrieving a Field from that table, to access the actual field (Text, Boolean etc), call `$field->instance`. (and `$instance->field` to access the generic field from the instance)
 Those generic fields can be set as `editable`, `deletable` and `visible` and hold the `name` and `machineName` fields.
 
 `title` and `published` and `slug` are added automatically to every content. see Content::reservedFieldnames for field names you can't use on content types.
 
-You can create fields that are not editable and/or not editable for any content type as any other field, not through the ui but manually in another module for example. `DeletableContentField` and `EditableContentField` middlewares are used to protect the routes.
+You can create fields that are not editable and/or not editable for any content type as any other field, not through the ui but manually in another module for example.
 
 ### Field Values
 Content values for each field are stored in the field_values table, they are relationned to a content and a field (generic).

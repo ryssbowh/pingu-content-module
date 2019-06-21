@@ -43,10 +43,10 @@ Route::post(ContentType::getAdminUri('storeField'), ['uses' => 'AdminContentFiel
 	->middleware('can:edit content types');
 Route::get(Field::getAdminUri('edit'), ['uses' => 'AdminContentFieldController@edit'])
 	->middleware('can:edit content types')
-	->middleware('editableContentField');
+	->middleware('editableModel:'.Field::routeSlug());
 Route::put(Field::getAdminUri('update'), ['uses' => 'AdminContentFieldController@update'])
 	->middleware('can:edit content types')
-	->middleware('editableContentField');
+	->middleware('editableModel:'.Field::routeSlug());
 
 /**
  * Content
