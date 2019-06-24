@@ -10,8 +10,10 @@ use Pingu\Content\Events\CreatingContent;
 use Pingu\Content\Listeners\CreateContentTypePermissions;
 use Pingu\Content\Listeners\CreateExistingContentFieldValues;
 use Pingu\Content\Listeners\DeleteContentTypePermissions;
+use Pingu\Content\Listeners\Form;
 use Pingu\Content\Listeners\GenerateContentSlug;
 use Pingu\Content\Listeners\PreventFieldDeletion;
+use Pingu\Forms\Events\FormBuilt;
 
 class EventServiceProvider extends ServiceProvider
 {

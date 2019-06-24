@@ -5,10 +5,8 @@ namespace Pingu\Content\Entities\Fields;
 use Pingu\Content\Contracts\ContentFieldContract;
 use Pingu\Content\Traits\ContentField;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Number;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Traits\Formable;
+use Pingu\Forms\Support\Fields\Checkbox;
+use Pingu\Forms\Traits\Models\Formable;
 
 class FieldBoolean extends BaseModel implements ContentFieldContract
 {
@@ -43,7 +41,7 @@ class FieldBoolean extends BaseModel implements ContentFieldContract
     {
         return [
             'default' => [
-                'type' => Boolean::class
+                'field' => Checkbox::class
             ]
         ];
     }
@@ -79,7 +77,7 @@ class FieldBoolean extends BaseModel implements ContentFieldContract
      */
     public function fieldType()
     {
-        return Boolean::class;
+        return Checkbox::class;
     }
     
     /**
@@ -88,7 +86,10 @@ class FieldBoolean extends BaseModel implements ContentFieldContract
     public function fieldDefinition()
     {
         return [
-            'default' => $this->default
+            'field' => Checkbox::class,
+            'options' => [
+                'default' => $this->default
+            ]
         ];
     }
 

@@ -5,10 +5,12 @@ namespace Pingu\Content\Entities\Fields;
 use Pingu\Content\Contracts\ContentFieldContract;
 use Pingu\Content\Traits\ContentField;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Email;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Traits\Formable;
+use Pingu\Forms\Support\Fields\Checkbox;
+use Pingu\Forms\Support\Fields\Email;
+use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Support\Types\Boolean;
+use Pingu\Forms\Support\Types\Text;
+use Pingu\Forms\Traits\Models\Formable;
 
 class FieldEmail extends BaseModel implements ContentFieldContract
 {
@@ -43,10 +45,10 @@ class FieldEmail extends BaseModel implements ContentFieldContract
     {
         return [
             'default' => [
-                'type' => Email::class
+                'field' => TextInput::class
             ],
             'required' => [
-                'type' => Boolean::class
+                'field' => Checkbox::class
             ],
         ];
     }
@@ -94,7 +96,10 @@ class FieldEmail extends BaseModel implements ContentFieldContract
     public function fieldDefinition()
     {
         return [
-            'default' => $this->default
+            'field' => TextInput::class,
+            'options' => [
+                'default' => $this->default
+            ]
         ];
     }
 

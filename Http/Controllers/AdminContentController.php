@@ -11,57 +11,10 @@ use Pingu\Core\Http\Controllers\BaseController;
 use Pingu\Forms\Fields\Boolean;
 use Pingu\Forms\Fields\Text;
 use Pingu\Forms\Form;
-use Pingu\Jsgrid\Contracts\Controllers\JsGridContract;
 use Pingu\Jsgrid\Traits\Controllers\JsGrid;
 
-class ContentController extends BaseController implements JsGridContract
+class AdminContentController extends BaseController
 {
-    use JsGrid;
-
-    /**
-     * @inheritDoc
-     */
-    public function getModel(): string
-    {
-        return Content::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function canClick()
-    {
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function canDelete()
-    {
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function canEdit()
-    {
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function index(Request $request)
-    {
-        $options['jsgrid'] = $this->buildJsGridView($request);
-        $options['title'] = 'Content';
-        $options['canSeeAddLink'] = false;
-        $options['addLink'] = '';
-        
-        return view('pages.listModel-jsGrid', $options);
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -153,16 +106,6 @@ class ContentController extends BaseController implements JsGridContract
         event(new ContentValidatorCreated($validator, $type));
 
         return $validator;
-    }
-
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        return view('content::show');
     }
 
     /**

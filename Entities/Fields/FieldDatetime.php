@@ -5,10 +5,10 @@ namespace Pingu\Content\Entities\Fields;
 use Pingu\Content\Contracts\ContentFieldContract;
 use Pingu\Content\Traits\ContentField;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Datetime;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Traits\Formable;
+use Pingu\Forms\Support\Fields\Checkbox;
+use Pingu\Forms\Support\Fields\Datetime;
+use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Traits\Models\Formable;
 
 class FieldDatetime extends BaseModel implements ContentFieldContract
 {
@@ -43,13 +43,13 @@ class FieldDatetime extends BaseModel implements ContentFieldContract
     {
         return [
             'default' => [
-                'type' => Datetime::class
+                'field' => Datetime::class
             ],
             'required' => [
-                'type' => Boolean::class
+                'field' => Checkbox::class
             ],
             'format' => [
-                'type' => Text::class
+                'field' => TextInput::class
             ]
         ];
     }
@@ -96,7 +96,10 @@ class FieldDatetime extends BaseModel implements ContentFieldContract
     public function fieldDefinition()
     {
         return [
-            'default' => $this->default
+            'field' => Datetime::class,
+            'options' => [
+                'default' => $this->default
+            ]
         ];
     }
 
