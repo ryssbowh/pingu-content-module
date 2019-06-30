@@ -152,7 +152,7 @@ class Content
 
         foreach($type->fields as $field){
             $definition = $field->buildFieldDefinition();
-            $definition = array_replace_recursive($field->instance->fieldDefinition(), $definition);
+            $definition = array_replace_recursive($definition, $field->instance->fieldDefinition());
             $fieldClass = FormField::buildFieldClass($field->machineName, $definition);
             $form->addField($field->machineName, $fieldClass);
         }
@@ -174,8 +174,9 @@ class Content
 
         foreach($content->values as $value){
             $field = $value->field;
-            $definition = $field->buildFieldDefinition($value->value);
-            $definition = array_replace_recursive($field->instance->fieldDefinition(), $definition);
+            $definition = $field->buildFieldDefinition();
+            $definition = array_replace_recursive($definition, $field->instance->fieldDefinition());
+            $definition['options']['default'] = $value->value;
             $fieldClass = FormField::buildFieldClass($field->machineName, $definition);
             $form->addField($field->machineName, $fieldClass);
         }

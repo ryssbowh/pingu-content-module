@@ -14,9 +14,9 @@ use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Fields\Model;
 use Pingu\Forms\Fields\Serie;
 use Pingu\Forms\Form;
-use Pingu\Jsgrid\Http\Controllers\JsGridController;
+use Pingu\Jsgrid\Http\Controllers\JsGridModelController;
 
-class JsGridContentTypeController extends JsGridController
+class JsGridContentTypeController extends JsGridModelController
 {
     /**
      * @inheritDoc

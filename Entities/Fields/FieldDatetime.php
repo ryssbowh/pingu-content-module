@@ -49,7 +49,11 @@ class FieldDatetime extends BaseModel implements ContentFieldContract
                 'field' => Checkbox::class
             ],
             'format' => [
-                'field' => TextInput::class
+                'field' => TextInput::class,
+                'options' => [
+                    'helper' => 'Valid <a target="_blank" href="https://momentjs.com/docs/#/parsing/">moment format</a>',
+                    'value' => 'YYYY-MM-DD'
+                ]
             ]
         ];
     }
@@ -62,7 +66,7 @@ class FieldDatetime extends BaseModel implements ContentFieldContract
         return [
             'default' => 'string',
             'required' => 'boolean',
-            'format' => 'string'
+            'format' => 'required|string'
         ];
     }
 
@@ -98,7 +102,8 @@ class FieldDatetime extends BaseModel implements ContentFieldContract
         return [
             'field' => Datetime::class,
             'options' => [
-                'default' => $this->default
+                'default' => $this->default,
+                'format' => $this->format
             ]
         ];
     }

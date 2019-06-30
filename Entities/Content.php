@@ -15,6 +15,8 @@ use Pingu\Core\Traits\Models\HasRouteSlug;
 use Pingu\Forms\Support\Fields\Checkbox;
 use Pingu\Forms\Support\Fields\ModelSelect;
 use Pingu\Forms\Support\Fields\TextInput;
+use Pingu\Forms\Support\Types\Boolean;
+use Pingu\Forms\Support\Types\Model;
 use Pingu\Forms\Traits\Models\Formable;
 use Pingu\Jsgrid\Contracts\Models\JsGridableContract;
 use Pingu\Jsgrid\Fields\Checkbox as JsGridCheckbox;
@@ -112,11 +114,15 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
                 ]
     		],
     		'published' => [
-    			'field' => Checkbox::class
+    			'field' => Checkbox::class,
+                'options' => [
+                    'type' => Boolean::class
+                ]
     		],
             'content_type' => [
                 'field' => ModelSelect::class,
                 'options' => [
+                    'type' => Model::class,
                     'label' => 'Type',
                     'model' => ContentType::class,
                     'textField' => 'name',
@@ -125,6 +131,7 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
             'creator' => [
                 'field' => ModelSelect::class,
                 'options' => [
+                    'type' => Model::class,
                     'model' => User::class,
                     'textField' => 'name'
                 ]

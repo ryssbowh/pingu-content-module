@@ -104,14 +104,13 @@ class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesCo
         ];
     }
 
-    public function buildFieldDefinition($value = null)
+    public function buildFieldDefinition()
     {
         return [
             'field' => $this->instance->fieldType(),
             'options' => [
                 'label' => $this->name,
-                'helper' => $this->helper,
-                'default' => $value
+                'helper' => $this->helper
             ],
             'attributes' => [
                 'required' => $this->instance->definesField('required') ? $this->instance->required : ''

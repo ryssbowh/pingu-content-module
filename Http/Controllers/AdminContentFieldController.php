@@ -19,7 +19,7 @@ use Pingu\Forms\Contracts\Models\FormableContract;
 use Pingu\Forms\Exceptions\ModelNotFormable;
 use Pingu\Forms\Fields\Text;
 use Pingu\Forms\Support\Fields\Hidden;
-use Pingu\Forms\Support\ModelForm;
+use Pingu\Forms\Support\Form;
 
 class AdminContentFieldController extends AdminModelController
 {
@@ -86,7 +86,7 @@ class AdminContentFieldController extends AdminModelController
     /**
      * @inheritDoc
      */
-    protected function modifyCreateForm(ModelForm $form)
+    protected function modifyCreateForm(Form $form)
     {
         $field = new Field;
         $form->addModelFields($field->getAddFormFields(), $field)
@@ -195,7 +195,7 @@ class AdminContentFieldController extends AdminModelController
     /**
      * @inheritDoc
      */
-    protected function modifyEditForm(ModelForm $form, BaseModel $field)
+    protected function modifyEditForm(Form $form, BaseModel $field)
     {
         $form->addModelFields($field->field->getEditFormFields(), $field->field)
             ->moveFieldUp('name')

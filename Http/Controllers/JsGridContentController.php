@@ -11,9 +11,9 @@ use Pingu\Core\Http\Controllers\BaseController;
 use Pingu\Forms\Fields\Boolean;
 use Pingu\Forms\Fields\Text;
 use Pingu\Forms\Form;
-use Pingu\Jsgrid\Http\Controllers\JsGridController;
+use Pingu\Jsgrid\Http\Controllers\JsGridModelController;
 
-class JsGridContentController extends JsGridController
+class JsGridContentController extends JsGridModelController
 {
     /**
      * @inheritDoc
