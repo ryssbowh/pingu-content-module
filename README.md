@@ -1,7 +1,5 @@
 # Content Module
 
-## v1.0.0 First commit
-
 ### Facades
 - Content : helpers to create content, content forms, content fields.
 
