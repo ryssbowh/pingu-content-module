@@ -4,6 +4,7 @@ namespace Pingu\Content\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Events\ContentValidatorCreated;
@@ -15,6 +16,20 @@ use Pingu\Jsgrid\Traits\Controllers\JsGrid;
 
 class AdminContentController extends BaseController
 {
+    public function createIndex()
+    {
+        $types = ContentType::all();
+        $available = [];
+        foreach($types as $type){
+            if(\Auth::user()->can('create '.Str::plural($type->machineName))){
+                $available[] = $type;
+            }
+        }
+        return view('content::create')->with([
+            'types' => $available,
+            'content' => Content::class
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.

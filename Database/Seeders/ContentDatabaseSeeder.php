@@ -61,7 +61,7 @@ class ContentDatabaseSeeder extends Seeder
             ], $menu, $structure);
             MenuItem::create([
                 'name' => 'Create',
-                'url' => '',
+                'url' => 'content.admin.create',
                 'active' => 1,
                 'deletable' => 0,
             ], $menu, $content);

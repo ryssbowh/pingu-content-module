@@ -55,6 +55,9 @@ Route::get(Content::getAdminUri('index'), ['uses' => 'JsGridContentController@in
 	->name('content.admin.content')
 	->middleware('can:view content');
 
+Route::get('content/create', ['uses' => 'AdminContentController@createIndex'])
+	->name('content.admin.create');
+
 Route::get(Content::getAdminUri('create'), ['uses' => 'AdminContentController@create'])
 	->middleware('can:create,'.ContentType::routeSlug());
 Route::get(Content::getAdminUri('edit'), ['uses' => 'AdminContentController@edit'])
