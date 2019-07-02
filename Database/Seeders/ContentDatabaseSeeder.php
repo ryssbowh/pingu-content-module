@@ -29,7 +29,7 @@ class ContentDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $menuItem = MenuItem::findByName('Content');
+        $menuItem = MenuItem::findByName('admin-menu.content');
 
         if(!$menuItem){
             $admin = Role::find(4);
