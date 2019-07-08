@@ -3,7 +3,6 @@
     "alias": "content",
     "description": "Content manager",
     "keywords": [],
-    "active": 1,
     "order": 10,
     "providers": [
         "Pingu\\Content\\Providers\\ContentServiceProvider"
