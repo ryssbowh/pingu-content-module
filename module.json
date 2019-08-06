@@ -4,6 +4,7 @@
     "description": "Content manager",
     "keywords": [],
     "order": 10,
+    "core": 1,
     "providers": [
         "Pingu\\Content\\Providers\\ContentServiceProvider"
     ],
