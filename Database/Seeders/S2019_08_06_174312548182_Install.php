@@ -2,6 +2,8 @@
 
 namespace Pingu\Content\Database\Seeders;
 
+use Pingu\Core\Seeding\MigratableSeeder;
+use Pingu\Core\Seeding\DisableForeignKeysTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Pingu\Content\Entities\ContentField;
@@ -20,14 +22,14 @@ use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
 use Pingu\User\Entities\Role;
 
-class ContentDatabaseSeeder extends Seeder
+class S2019_08_06_174312548182_Install extends MigratableSeeder
 {
+    use DisableForeignKeysTrait;
+
     /**
-     * Run the database seeds.
-     *
-     * @return void
+     * Run the database seeder.
      */
-    public function run()
+    public function run(): void
     {
         $menuItem = MenuItem::findByName('admin-menu.content');
 
@@ -84,5 +86,13 @@ class ContentDatabaseSeeder extends Seeder
             $field->content_type()->associate($article);
             $content->field()->save($field);
         }
+    }
+
+    /**
+     * Reverts the database seeder.
+     */
+    public function down(): void
+    {
+        // Remove your data
     }
 }
