@@ -7,12 +7,9 @@ use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\Field;
 use Pingu\Content\Events\ContentTypeCreated;
 use Pingu\Content\Events\ContentTypeDeleted;
-use Pingu\Core\Contracts\Models\HasAdminRoutesContract;
 use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Traits\Models\HasAdminRoutes;
-use Pingu\Core\Traits\Models\HasAjaxRoutes;
-use Pingu\Core\Traits\Models\HasRouteSlug;
+use Pingu\Core\Traits\Models\HasBasicCrudUris;
 use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Types\Text;
 use Pingu\Forms\Traits\Models\Formable;
@@ -23,9 +20,9 @@ use Pingu\Menu\Entities\Menu;
 use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
 
-class ContentType extends BaseModel implements JsGridableContract, HasAdminRoutesContract, HasContextualLinksContract
+class ContentType extends BaseModel implements JsGridableContract, HasContextualLinksContract
 {
-	use Formable, JsGridable, HasAjaxRoutes, HasAdminRoutes, HasRouteSlug;
+	use Formable, JsGridable, HasBasicCrudUris;
 
     public static function boot() {
         parent::boot();
@@ -170,36 +167,41 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
     }
 
     /**
-     * admin uri to list this content type's fields
+     * uri to list this content type's fields
+     * 
      * @return string
      */
-    public static function adminListFieldsUri()
+    public static function listFieldsUri()
     {
     	return static::routeSlug().'/{'.static::routeSlug().'}/fields';
     }
 
     /**
-     * admin uri to store a field on this content type
+     * uri to store a field on this content type
+     * 
      * @return string
      */
-    public static function adminStoreFieldUri()
+    public static function storeFieldUri()
     {
         return static::routeSlug().'/{'.static::routeSlug().'}/fields';
     }
 
     /**
-     * admin uri to patch fields for this content type
+     * uri to patch fields for this content type
+     * 
      * @return string
      */
-    public static function ajaxPatchFieldsUri()
+    public static function patchFieldsUri()
     {
         return static::routeSlug().'/{'.static::routeSlug().'}/fields';
     }
 
     /**
-     * @inheritDoc
+     * uri to add a field for this content type
+     * 
+     * @return string
      */
-    public static function adminAddFieldUri()
+    public static function addFieldUri()
     {
     	return static::routeSlug().'/{'.static::routeSlug().'}/fields/create';
     }
@@ -215,6 +217,7 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
 
     /**
      * Get all content associated to this content type
+     * 
      * @return Relation
      */
     public function contents()
@@ -224,6 +227,7 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
 
     /**
      * Get all fields (morphed) associated to this content type
+     * 
      * @return Collection
      */
     public function getFields()
@@ -235,6 +239,7 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
 
     /**
      * Gets the machine names of all the fields defined for that content type
+     * 
      * @return array
      */
     public function getAllFieldsMachineNames()
@@ -244,6 +249,7 @@ class ContentType extends BaseModel implements JsGridableContract, HasAdminRoute
 
     /**
      * Find a content type by machine name
+     * 
      * @param  string $name
      * @return null|ContentType
      */

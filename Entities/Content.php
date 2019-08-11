@@ -7,11 +7,8 @@ use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\FieldValue;
 use Pingu\Content\Events\ContentCreated;
 use Pingu\Content\Events\CreatingContent;
-use Pingu\Core\Contracts\Models\HasAdminRoutesContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Traits\Models\HasAdminRoutes;
-use Pingu\Core\Traits\Models\HasAjaxRoutes;
-use Pingu\Core\Traits\Models\HasRouteSlug;
+use Pingu\Core\Traits\Models\HasBasicCrudUris;
 use Pingu\Forms\Support\Fields\Checkbox;
 use Pingu\Forms\Support\Fields\ModelSelect;
 use Pingu\Forms\Support\Fields\TextInput;
@@ -25,9 +22,9 @@ use Pingu\Jsgrid\Fields\Text as JsGridText;
 use Pingu\Jsgrid\Traits\Models\JsGridable;
 use Pingu\User\Entities\User;
 
-class Content extends BaseModel implements JsGridableContract, HasAdminRoutesContract
+class Content extends BaseModel implements JsGridableContract
 {
-    use Formable, JsGridable, HasAdminRoutes, HasAjaxRoutes, HasRouteSlug;
+    use Formable, JsGridable, HasBasicCrudUris;
 
     protected $dispatchesEvents =[
         'creating' => CreatingContent::class,
@@ -217,7 +214,7 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     /**
      * @inheritDoc
      */
-    public static function adminCreateUri()
+    public static function createUri()
     {
         return static::routeSlug().'/{'.ContentType::routeSlug().'}/create';
     }
@@ -225,7 +222,7 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     /**
      * @inheritDoc
      */
-    public static function adminStoreUri()
+    public static function storeUri()
     {
         return static::routeSlug().'/{'.ContentType::routeSlug().'}';
     }
@@ -233,7 +230,7 @@ class Content extends BaseModel implements JsGridableContract, HasAdminRoutesCon
     /**
      * @inheritDoc
      */
-    public static function adminConfirmDestroyUri()
+    public static function confirmDestroyUri()
     {
         return static::routeSlug().'/{'.Content::routeSlug().'}/delete';
     }

@@ -50,7 +50,6 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->registerConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'content');
         $this->registerFactories();
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
         $this->registerContentFields();
 
         $router->aliasMiddleware('deletableContentField', DeletableContentField::class);

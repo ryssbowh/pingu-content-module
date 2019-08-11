@@ -18,24 +18,24 @@ use Pingu\Content\Entities\Field;
 /**
  * Content types
  */
-Route::get(ContentType::getAjaxUri('index'), ['uses' => 'JsGridContentTypeController@jsGridIndex'])
+Route::get(ContentType::getUri('index'), ['uses' => 'JsGridContentTypeController@jsGridIndex'])
 	->middleware('can:view content types');
-Route::delete(ContentType::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeController@destroy'])
+Route::delete(ContentType::getUri('delete'), ['uses' => 'AjaxContentTypeController@destroy'])
 	->middleware('can:delete content types');
-Route::patch(ContentType::getAjaxUri('patchFields'), ['uses' => 'AjaxContentTypeFieldsController@patch'])
+Route::patch(ContentType::getUri('patchFields'), ['uses' => 'AjaxContentTypeFieldsController@patch'])
 	->middleware('can:edit content types');
-Route::put(ContentType::getAjaxUri('update'), ['uses' => 'AjaxContentTypeController@update'])
+Route::put(ContentType::getUri('update'), ['uses' => 'AjaxContentTypeController@update'])
 	->middleware('can:edit content types');
 
 /**
  * Content Fields
  */
-Route::delete(Field::getAjaxUri('delete'), ['uses' => 'AjaxContentTypeFieldsController@delete'])
+Route::delete(Field::getUri('delete'), ['uses' => 'AjaxContentTypeFieldsController@delete'])
 	->middleware('can:edit content types')
 	->middleware('deletableModel:'.Field::routeSlug());
 
 /**
  * Content
  */
-Route::get(Content::getAjaxUri('index'), ['uses' => 'JsGridContentController@jsGridIndex'])
+Route::get(Content::getUri('index'), ['uses' => 'JsGridContentController@jsGridIndex'])
 	->middleware('can:view content');

@@ -4,19 +4,16 @@ namespace Pingu\Content\Entities;
 
 use Pingu\Content\Events\ContentFieldCreated;
 use Pingu\Content\Events\DeletingContentField;
-use Pingu\Core\Contracts\Models\HasAdminRoutesContract;
-use Pingu\Core\Contracts\Models\HasAjaxRoutesContract;
+use Pingu\Core\Contracts\Models\HasCrudUrisContract;
 use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Traits\Models\HasAdminRoutes;
-use Pingu\Core\Traits\Models\HasAjaxRoutes;
-use Pingu\Core\Traits\Models\HasRouteSlug;;
+use Pingu\Core\Traits\Models\HasBasicCrudUris;
 use Pingu\Forms\Contracts\Models\FormableContract;
 use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Traits\Models\Formable;
 
-class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesContract, FormableContract
+class Field extends BaseModel implements FormableContract, HasCrudUrisContract
 {
-    use HasAdminRoutes, HasAjaxRoutes, Formable, HasRouteSlug;
+    use Formable, HasBasicCrudUris;
 
     protected $dispatchesEvents = [
         'created' => ContentFieldCreated::class
@@ -139,7 +136,7 @@ class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesCo
     /**
      * @inheritDoc
      */
-    public static function adminEditUri()
+    public static function editUri()
     {
         return 'content/field/{'.static::routeSlug().'}/edit';
     }
@@ -147,7 +144,7 @@ class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesCo
     /**
      * @inheritDoc
      */
-    public static function adminUpdateUri()
+    public static function updateUri()
     {
         return 'content/field/{'.static::routeSlug().'}';
     }
@@ -155,7 +152,7 @@ class Field extends BaseModel implements HasAdminRoutesContract, HasAjaxRoutesCo
     /**
      * @inheritDoc
      */
-    public static function ajaxDeleteUri()
+    public static function deleteUri()
     {
         return 'content/field/{'.static::routeSlug().'}';
     }
