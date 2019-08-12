@@ -81,7 +81,7 @@ class EditContentForm extends Form
 	 */
 	public function url()
 	{
-		return ['url' => Content::transformAdminUri('update', [$this->content], true)];
+		return ['url' => Content::transformUri('update', [$this->content], config('core.adminPrefix'))];
 	}
 
 	/**

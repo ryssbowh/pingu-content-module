@@ -69,7 +69,7 @@ class AddContentForm extends Form
 	 */
 	public function url()
 	{
-		return ['url' => Content::transformAdminUri('store', [$this->type], true)];
+		return ['url' => Content::transformUri('store', [$this->type], config('core.adminPrefix'))];
 	}
 
 	/**

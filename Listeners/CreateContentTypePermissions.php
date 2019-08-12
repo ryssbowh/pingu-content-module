@@ -55,7 +55,7 @@ class CreateContentTypePermissions
         $create = Permission::findByName('create '.$pluralName);
         MenuItem::create([
             'name' => $contentType->name,
-            'url' => Content::transformAdminUri('create',[$contentType], true),
+            'url' => Content::transformUri('create',[$contentType], config('core.adminPrefix')),
             'active' => true,
             'deletable' => false,
             'permission_id' => $create->id

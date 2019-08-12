@@ -77,7 +77,7 @@ class AdminContentController extends BaseController
             'title' => 'Edit '.$content->title,
             'contentType' => $content->content_type,
             'content' => $content,
-            'deleteUri' => $content::transformAdminUri('confirmDestroy', [$content], true)
+            'deleteUri' => $content::transformUri('confirmDelete', [$content], config('core.adminPrefix'))
         ]);
     }
 
@@ -132,7 +132,7 @@ class AdminContentController extends BaseController
     {   
         $form = new Form([
             'delete-content',
-            ['url' => Content::transformAdminuri('destroy', [$content]), 'method' => "DELETE"],
+            ['url' => Content::transformUri('delete', [$content], config('core.adminPrefix')), 'method' => "DELETE"],
             [],
             []
         ]);

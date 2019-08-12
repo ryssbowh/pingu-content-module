@@ -72,7 +72,7 @@ class AdminContentFieldController extends AdminModelController
      */
     protected function getStoreUrl()
     {
-        return ContentType::transformAdminUri('storeField', [$this->contentType], true);
+        return ContentType::transformUri('storeField', [$this->contentType], config('core.adminPrefix'));
     }
 
     /**
@@ -157,7 +157,7 @@ class AdminContentFieldController extends AdminModelController
      */
     protected function onSuccessfullStore(BaseModel $field)
     {
-        return redirect(ContentType::transformAdminUri('listFields', [$this->contentType], true));
+        return redirect(ContentType::transformUri('listFields', [$this->contentType], config('core.adminPrefix')));
     }
 
     /**
@@ -226,7 +226,7 @@ class AdminContentFieldController extends AdminModelController
      */
     protected function getUpdateUrl(BaseModel $field)
     {
-        return $field->field::transformAdminUri('update', [$field->field], true);
+        return $field->field::transformUri('update', [$field->field], config('core.adminPrefix'));
     }
 
     /**
@@ -234,7 +234,7 @@ class AdminContentFieldController extends AdminModelController
      */
     protected function onSuccessfullUpdate(BaseModel $field)
     {
-        return redirect($field->field->content_type::transformAdminUri('listFields', [$field->field->content_type], true));
+        return redirect($field->field->content_type::transformUri('listFields', [$field->field->content_type], config('core.adminPrefix')));
     }
 
     /**

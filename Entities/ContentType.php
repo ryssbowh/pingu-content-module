@@ -157,11 +157,11 @@ class ContentType extends BaseModel implements JsGridableContract, HasContextual
         return [
             'edit' => [
                 'title' => 'Edit',
-                'url' => $this::transformAdminUri('edit', [$this], true)
+                'url' => $this::transformUri('edit', [$this], config('core.adminPrefix'))
             ],
             'fields' => [
                 'title' => 'Fields',
-                'url' => $this::transformAdminUri('listFields', [$this], true)
+                'url' => $this::transformUri('listFields', [$this], config('core.adminPrefix'))
             ]
         ];
     }
