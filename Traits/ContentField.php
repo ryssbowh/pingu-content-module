@@ -33,25 +33,8 @@ trait ContentField
 	}
 
 	/**
-	 * validation rules getter
-	 * @return array
-	 */
-	public function getFieldValidationRules()
-	{
-		return $this->fieldValidationRules();
-	}
-
-	/**
-	 * validation messages getter
-	 * @return array
-	 */
-	public function getFieldValidationMessages()
-	{
-		return $this->fieldValidationMessages();
-	}
-
-	/**
 	 * Does this content field define a field
+	 * 
 	 * @param  string $name
 	 * @return bool
 	 */

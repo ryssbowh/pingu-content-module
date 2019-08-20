@@ -89,14 +89,6 @@ class FieldDatetime extends BaseModel implements ContentFieldContract
     /**
      * @inheritDoc
      */
-    public function fieldType()
-    {
-        return Datetime::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function fieldDefinition()
     {
         return [

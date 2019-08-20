@@ -46,7 +46,7 @@ class DeleteContentTypePermissions
                 $permission->delete();
             }
         }
-        if($item = MenuItem::findByName('admin-menu.content.create.'.$contentType->machineName)){
+        if($item = MenuItem::findByMachineName('admin-menu.content.create.'.$contentType->machineName)){
             $item->delete();
         }
     }

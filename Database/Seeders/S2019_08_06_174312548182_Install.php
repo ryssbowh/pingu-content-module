@@ -29,7 +29,7 @@ class S2019_08_06_174312548182_Install extends MigratableSeeder
      */
     public function run(): void
     {
-        $menuItem = MenuItem::findByName('admin-menu.content');
+        $menuItem = MenuItem::findByMachineName('admin-menu.content');
 
         if(!$menuItem){
             $admin = Role::find(4);
@@ -51,7 +51,7 @@ class S2019_08_06_174312548182_Install extends MigratableSeeder
                 'active' => 1,
                 'permission_id' => $viewContent->id
             ], $menu);
-            $structure = MenuItem::findByName('admin-menu.structure');
+            $structure = MenuItem::findByMachineName('admin-menu.structure');
             MenuItem::create([
                 'name' => 'Content types',
                 'url' => 'content.admin.contentTypes',

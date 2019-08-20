@@ -111,14 +111,6 @@ class FieldUrl extends BaseModel implements ContentFieldContract
     /**
      * @inheritDoc
      */
-    public function fieldType()
-    {
-        return TextInput::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public static function getMachineName()
     {
         return 'url';

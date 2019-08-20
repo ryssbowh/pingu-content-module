@@ -71,14 +71,6 @@ class FieldBoolean extends BaseModel implements ContentFieldContract
     {
     	return 'Boolean';
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function fieldType()
-    {
-        return Checkbox::class;
-    }
     
     /**
      * @inheritDoc

@@ -80,14 +80,6 @@ class FieldInteger extends BaseModel implements ContentFieldContract
     /**
      * @inheritDoc
      */
-    public function fieldType()
-    {
-        return NumberInput::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function fieldDefinition()
     {
         return [

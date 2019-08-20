@@ -80,14 +80,6 @@ class FieldText extends BaseModel implements ContentFieldContract
     /**
      * @inheritDoc
      */
-    public function fieldType()
-    {
-        return TextInput::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function fieldDefinition()
     {
         return [

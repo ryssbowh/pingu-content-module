@@ -85,14 +85,6 @@ class FieldEmail extends BaseModel implements ContentFieldContract
     /**
      * @inheritDoc
      */
-    public function fieldType()
-    {
-        return Email::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function fieldDefinition()
     {
         return [

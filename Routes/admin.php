@@ -37,16 +37,23 @@ Route::get(ContentType::getUri('listFields'), ['uses' => 'AdminContentTypeContro
 /**
  * Content type fields
  */
-Route::get(ContentType::getUri('addField'), ['uses' => 'AdminContentFieldController@create'])
+Route::get(ContentType::getUri('addField'), ['uses' => 'AdminContentTypeFieldController@create'])
 	->middleware('can:edit content types');
-Route::post(ContentType::getUri('storeField'), ['uses' => 'AdminContentFieldController@store'])
+Route::post(ContentType::getUri('storeField'), ['uses' => 'AdminContentTypeFieldController@store'])
 	->middleware('can:edit content types');
-Route::get(Field::getUri('edit'), ['uses' => 'AdminContentFieldController@edit'])
+Route::get(Field::getUri('edit'), ['uses' => 'AdminContentTypeFieldController@edit'])
 	->middleware('can:edit content types')
 	->middleware('editableModel:'.Field::routeSlug());
-Route::put(Field::getUri('update'), ['uses' => 'AdminContentFieldController@update'])
+Route::put(Field::getUri('update'), ['uses' => 'AdminContentTypeFieldController@update'])
 	->middleware('can:edit content types')
 	->middleware('editableModel:'.Field::routeSlug());
+
+Route::get(Field::getUri('delete'), ['uses' => 'AdminContentTypeFieldController@confirmDelete'])
+	->middleware('can:edit content types')
+	->middleware('deletableModel:'.Field::routeSlug());
+Route::delete(Field::getUri('delete'), ['uses' => 'AdminContentTypeFieldController@delete'])
+	->middleware('can:edit content types')
+	->middleware('deletableModel:'.Field::routeSlug());
 
 /**
  * Content

@@ -7,7 +7,9 @@ use Pingu\Content\Events\DeletingContentField;
 use Pingu\Core\Contracts\Models\HasCrudUrisContract;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasBasicCrudUris;
+use Pingu\Core\Traits\Models\HasWeight;
 use Pingu\Forms\Contracts\Models\FormableContract;
+use Pingu\Forms\Support\Fields\NumberInput;
 use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Traits\Models\Formable;
 
@@ -19,7 +21,7 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
         'created' => ContentFieldCreated::class
     ];
 
-    protected $fillable = ['editable', 'deletable', 'name', 'machineName','helper'];
+    protected $fillable = ['editable', 'deletable', 'name', 'machineName','helper','weight'];
 
     protected $casts = [
         'deletable' => 'boolean',
@@ -34,6 +36,17 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
 
     protected $with = ['instance'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function($field){
+            if(is_null($field->weight)){
+                $field->weight = $field->getNextWeight();
+            }
+        });
+    }
+
     /**
      * @inheritDoc
      */
@@ -47,7 +60,7 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
      */
     public function formEditFields()
     {
-        return ['name', 'helper'];
+        return ['name', 'helper', 'weight'];
     }
 
     /**
@@ -64,6 +77,9 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
             ],
             'helper' => [
                 'field' => TextInput::class
+            ],
+            'weight' => [
+                'field' => NumberInput::class
             ],
             'machineName' => [
                 'field' => TextInput::class,
@@ -86,7 +102,8 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
         return [
             'name' => 'required|string',
             'helper' => 'string',
-            'machineName' => 'required|string'
+            'machineName' => 'required|string',
+            'weight' => 'integer'
         ];
     }
 
@@ -104,7 +121,6 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
     public function buildFieldDefinition()
     {
         return [
-            'field' => $this->instance->fieldType(),
             'options' => [
                 'label' => $this->name,
                 'helper' => $this->helper
@@ -154,7 +170,7 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
      */
     public static function deleteUri()
     {
-        return 'content/field/{'.static::routeSlug().'}';
+        return 'content/field/{'.static::routeSlug().'}/delete';
     }
 
     /**
@@ -168,16 +184,4 @@ class Field extends BaseModel implements FormableContract, HasCrudUrisContract
         return ($last->weight + 1);
     }
 
-    /**
-     * Overrides save to add a default weight
-     * @param  array  $options
-     * @return bool
-     */
-    public function save(array $options = [])
-    {
-        if(is_null($this->weight)){
-            $this->weight = $this->getNextWeight();
-        }
-        return parent::save();
-    }
 }

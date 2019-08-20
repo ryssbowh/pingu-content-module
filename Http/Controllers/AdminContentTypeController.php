@@ -32,7 +32,7 @@ class AdminContentTypeController extends AdminModelController
             $items[$name] = $class::friendlyName();
         }
 
-        $url = ContentType::transformUri('addField', [$type], config('core.adminPrefix'));
+        $url = ContentType::makeUri('addField', [$type], adminPrefix());
         $form = new ContentFieldForm($url, $items);
 
         return view('content::listFields')->with([
@@ -45,8 +45,8 @@ class AdminContentTypeController extends AdminModelController
     /**
      * @inheritDoc
      */
-    protected function onSuccessfullStore(BaseModel $model)
+    protected function onStoreSuccess(BaseModel $model)
     {
-        return redirect(ContentType::transformUri('listFields', [$model], config('core.adminPrefix')));
+        return redirect(ContentType::makeUri('listFields', [$model], adminPrefix()));
     }
 }

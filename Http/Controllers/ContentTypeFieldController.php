@@ -21,16 +21,23 @@ use Pingu\Forms\Fields\Text;
 use Pingu\Forms\Support\Fields\Hidden;
 use Pingu\Forms\Support\Form;
 
-class AdminContentFieldController extends AdminModelController
-{
-    protected $request;
+trait ContentTypeFieldController
+{   
+    /**
+     * @var ContentType
+     */
     protected $contentType;
+
+    /**
+     * ContentField class
+     * @var string
+     */
     protected $fieldType;
 
     public function __construct(Request $request)
     {
         if($name = $request->route()->parameter(ContentType::routeSlug())){
-            $this->contentType = ContentType::findByName($name);
+            $this->contentType = ContentType::findByMachineName($name);
         }
         parent::__construct($request);
     }
@@ -70,15 +77,23 @@ class AdminContentFieldController extends AdminModelController
     /**
      * @inheritDoc
      */
-    protected function getStoreUrl()
+    protected function getStoreUri()
     {
-        return ContentType::transformUri('storeField', [$this->contentType], config('core.adminPrefix'));
+        return ContentType::makeUri('storeField', [$this->contentType], adminPrefix());
     }
 
     /**
      * @inheritDoc
      */
-    protected function getStoreModel()
+    protected function getUpdateUri(BaseModel $model)
+    {
+        return $model->field::makeUri('update', [$model->field], adminPrefix());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getCreateModel()
     {
         return get_class($this->fieldType);
     }
@@ -86,13 +101,31 @@ class AdminContentFieldController extends AdminModelController
     /**
      * @inheritDoc
      */
-    protected function modifyCreateForm(Form $form)
+    protected function getEditModel(BaseModel $field)
     {
+        return $field->instance;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getUpdateModel(BaseModel $field)
+    {
+        return $field->instance;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterCreateFormCreated(Form $form)
+    {
+        parent::afterCreateFormCreated($form);
         $field = new Field;
         $form->addModelFields($field->getAddFormFields(), $field)
+            ->moveFieldUp('helper')
             ->moveFieldUp('machineName')
             ->moveFieldUp('name')
-            ->moveFieldDown('submit');
+            ->moveFieldDown('_submit');
 
         $type = $this->request->input('type');
 
@@ -119,11 +152,11 @@ class AdminContentFieldController extends AdminModelController
         $type = $this->contentType;
         $validator->after(function($validator) use ($type, $fieldFields){
             /**
-             * Modify the validator so we can check reserved field names 
+             * Modify the validator so we can check if reserved field names 
              * (because they are added by the system on every content) are not used
              * and if the machine name is unique for that content type
              */
-            $names = $type->getAllFieldsMachineNames();
+            $names = $type->allMachineNames();
             $name = $validator->getData()['machineName'];
             if(in_array($name, Content::$reservedFieldNames)){
                 $validator->errors()->add($name, "Machine name $name is reserved by the system");
@@ -155,51 +188,13 @@ class AdminContentFieldController extends AdminModelController
     /**
      * @inheritDoc
      */
-    protected function onSuccessfullStore(BaseModel $field)
+    protected function afterEditFormCreated(Form $form, BaseModel $field)
     {
-        return redirect(ContentType::transformUri('listFields', [$this->contentType], config('core.adminPrefix')));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function onModelCreated(BaseModel $field)
-    {
-        \Notify::success($field::friendlyName().' field '.$field->field->name.' has been saved');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function addVariablesToCreateView(array &$with)
-    {
-        $with['title'] = 'Add a '.$this->fieldType::friendlyname().' field';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function addVariablesToEditView(array &$with, BaseModel $model)
-    {
-        $with['title'] = 'Edit field '.$model->field->name;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getEditModel(BaseModel $field)
-    {
-        return $field->instance;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function modifyEditForm(Form $form, BaseModel $field)
-    {
+        parent::afterEditFormCreated($form, $field);
         $form->addModelFields($field->field->getEditFormFields(), $field->field)
+            ->moveFieldUp('helper')
             ->moveFieldUp('name')
-            ->moveFieldDown('submit');
+            ->moveFieldDown('_submit');
     }
 
     /**
@@ -221,21 +216,6 @@ class AdminContentFieldController extends AdminModelController
 
         return $validator;
     }
-    /**
-     * @inheritDoc
-     */
-    protected function getUpdateUrl(BaseModel $field)
-    {
-        return $field->field::transformUri('update', [$field->field], config('core.adminPrefix'));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function onSuccessfullUpdate(BaseModel $field)
-    {
-        return redirect($field->field->content_type::transformUri('listFields', [$field->field->content_type], config('core.adminPrefix')));
-    }
 
     /**
      * @inheritDoc
@@ -251,22 +231,6 @@ class AdminContentFieldController extends AdminModelController
         $field->field->save();
         
         return ($field->field->getChanges() or $field->saveWithRelations($values));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function onModelUpdatedWithoutChanges(BaseModel $field)
-    {
-        \Notify::info('No changes made to field '.$field->field->name);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function onModelUpdatedWithChanges(BaseModel $field)
-    {
-        \Notify::success('Field '.$field->field->name.' has been saved');
     }
 
 }

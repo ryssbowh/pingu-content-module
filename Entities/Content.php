@@ -230,7 +230,7 @@ class Content extends BaseModel implements JsGridableContract
     /**
      * @inheritDoc
      */
-    public static function confirmDeleteUri()
+    public static function deleteUri()
     {
         return static::routeSlug().'/{'.Content::routeSlug().'}/delete';
     }

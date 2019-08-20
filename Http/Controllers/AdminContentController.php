@@ -77,7 +77,7 @@ class AdminContentController extends BaseController
             'title' => 'Edit '.$content->title,
             'contentType' => $content->content_type,
             'content' => $content,
-            'deleteUri' => $content::transformUri('confirmDelete', [$content], config('core.adminPrefix'))
+            'deleteUri' => $content::makeUri('delete', [$content])
         ]);
     }
 
@@ -111,8 +111,8 @@ class AdminContentController extends BaseController
         $messages = ['title.required' => $type->titleField.' is required'];
 
         foreach($type->fields as $field){
-            $rules[$field->machineName] = $field->instance->getFieldValidationRules();
-            foreach($field->instance->getFieldValidationMessages() as $name => $message){
+            $rules[$field->machineName] = $field->instance->fieldValidationRules();
+            foreach($field->instance->fieldValidationMessages() as $name => $message){
                 $messages[$field->machineName.'.'.$name] = $message;
             }
         }
@@ -121,24 +121,5 @@ class AdminContentController extends BaseController
         event(new ContentValidatorCreated($validator, $type));
 
         return $validator;
-    }
-
-    /**
-     * Confirm deleteion
-     * @param Content $content
-     * @return view
-     */
-    public function confirmDestroy(Content $content)
-    {   
-        $form = new Form([
-            'delete-content',
-            ['url' => Content::transformUri('delete', [$content], config('core.adminPrefix')), 'method' => "DELETE"],
-            [],
-            []
-        ]);
-        return view('content::deleteContent')->with([
-            'content' => $content,
-            'form' => $form
-        ]);
     }
 }

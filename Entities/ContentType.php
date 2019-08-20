@@ -10,6 +10,7 @@ use Pingu\Content\Events\ContentTypeDeleted;
 use Pingu\Core\Contracts\Models\HasContextualLinksContract;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasBasicCrudUris;
+use Pingu\Core\Traits\Models\HasMachineName;
 use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Types\Text;
 use Pingu\Forms\Traits\Models\Formable;
@@ -22,7 +23,7 @@ use Pingu\Permissions\Entities\Permission;
 
 class ContentType extends BaseModel implements JsGridableContract, HasContextualLinksContract
 {
-	use Formable, JsGridable, HasBasicCrudUris;
+	use Formable, JsGridable, HasBasicCrudUris, HasMachineName;
 
     public static function boot() {
         parent::boot();
@@ -157,11 +158,11 @@ class ContentType extends BaseModel implements JsGridableContract, HasContextual
         return [
             'edit' => [
                 'title' => 'Edit',
-                'url' => $this::transformUri('edit', [$this], config('core.adminPrefix'))
+                'url' => $this::makeUri('edit', [$this], adminPrefix())
             ],
             'fields' => [
                 'title' => 'Fields',
-                'url' => $this::transformUri('listFields', [$this], config('core.adminPrefix'))
+                'url' => $this::makeUri('listFields', [$this], adminPrefix())
             ]
         ];
     }
@@ -235,26 +236,5 @@ class ContentType extends BaseModel implements JsGridableContract, HasContextual
         return $this->fields->map(function($field){
             return $field->instance;
         });
-    }
-
-    /**
-     * Gets the machine names of all the fields defined for that content type
-     * 
-     * @return array
-     */
-    public function getAllFieldsMachineNames()
-    {
-        return $this->fields->pluck('machineName')->toArray();
-    }
-
-    /**
-     * Find a content type by machine name
-     * 
-     * @param  string $name
-     * @return null|ContentType
-     */
-    public static function findByName(string $name)
-    {
-        return static::where(['machineName' => $name])->first();
     }
 }

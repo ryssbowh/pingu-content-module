@@ -47,14 +47,17 @@ class EditContentForm extends Form
 	            	'default' => $this->content->published
 	            ]
 	        ],
-	        'submit' => [
+	        '_submit' => [
 	        	'field' => Submit::class,
 	        ],
-	        'link' => [
+	        '_back' => [
 	        	'field' => Link::class,
 	        	'options' => [
 	        		'label' => 'Back',
 	        		'url' => url()->previous(),
+	        	],
+	        	'attributes' => [
+	        		'class' => 'back'
 	        	]
 	        ]
         ];
@@ -81,7 +84,7 @@ class EditContentForm extends Form
 	 */
 	public function url()
 	{
-		return ['url' => Content::transformUri('update', [$this->content], config('core.adminPrefix'))];
+		return ['url' => Content::makeUri('update', [$this->content], adminPrefix())];
 	}
 
 	/**

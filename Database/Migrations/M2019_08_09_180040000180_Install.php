@@ -34,13 +34,6 @@ class M2019_08_09_180040000180_Install extends Migration
             $table->timestamps();
         });
 
-        Schema::create('fields_available', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('class');
-            $table->timestamps();
-        });
-
         Schema::create('fields', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('instance');

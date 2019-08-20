@@ -22,15 +22,27 @@ Route::get(ContentType::getUri('index'), ['uses' => 'JsGridContentTypeController
 	->middleware('can:view content types');
 Route::delete(ContentType::getUri('delete'), ['uses' => 'AjaxContentTypeController@destroy'])
 	->middleware('can:delete content types');
-Route::patch(ContentType::getUri('patchFields'), ['uses' => 'AjaxContentTypeFieldsController@patch'])
-	->middleware('can:edit content types');
 Route::put(ContentType::getUri('update'), ['uses' => 'AjaxContentTypeController@update'])
 	->middleware('can:edit content types');
 
+
 /**
- * Content Fields
+ * Content type fields
  */
-Route::delete(Field::getUri('delete'), ['uses' => 'AjaxContentTypeFieldsController@delete'])
+Route::get(ContentType::getUri('addField'), ['uses' => 'AjaxContentTypeFieldController@create'])
+	->middleware('can:edit content types');
+Route::patch(ContentType::getUri('patchFields'), ['uses' => 'AjaxContentTypeFieldController@patch'])
+	->middleware('can:edit content types');
+Route::post(ContentType::getUri('storeField'), ['uses' => 'AjaxContentTypeFieldController@store'])
+	->middleware('can:edit content types');
+Route::get(Field::getUri('edit'), ['uses' => 'AjaxContentTypeFieldController@edit'])
+	->middleware('can:edit content types')
+	->middleware('editableModel:'.Field::routeSlug());
+Route::put(Field::getUri('update'), ['uses' => 'AjaxContentTypeFieldController@update'])
+	->middleware('can:edit content types')
+	->middleware('editableModel:'.Field::routeSlug());
+
+Route::delete(Field::getUri('delete'), ['uses' => 'AjaxContentTypeFieldController@delete'])
 	->middleware('can:edit content types')
 	->middleware('deletableModel:'.Field::routeSlug());
 

@@ -82,14 +82,6 @@ class FieldTextLong extends BaseModel implements ContentFieldContract
     /**
      * @inheritDoc
      */
-    public function fieldType()
-    {
-        return Textarea::class;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function fieldDefinition()
     {
         return [

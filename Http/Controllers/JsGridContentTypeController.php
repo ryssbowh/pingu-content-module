@@ -34,7 +34,7 @@ class JsGridContentTypeController extends JsGridModelController
         $options['jsgrid'] = $this->buildJsGridView($request);
         $options['title'] = str_plural(ContentType::friendlyName());
         $options['canSeeAddLink'] = Auth::user()->can('add content types');
-        $options['addLink'] = ContentType::getUri('create', config('core.adminPrefix'));
+        $options['addLink'] = ContentType::getUri('create', adminPrefix());
         
         return view('pages.listModel-jsGrid', $options);
     }

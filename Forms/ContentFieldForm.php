@@ -38,7 +38,7 @@ class ContentFieldForm extends Form
             ],
             'submit' => [
             	'field' => Submit::class,
-            	'options' => ['label' => 'Save']
+            	'options' => ['label' => 'Submit']
             ]
 		];
 	}

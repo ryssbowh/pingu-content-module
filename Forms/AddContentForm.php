@@ -5,6 +5,7 @@ namespace Pingu\Content\Forms;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Forms\Support\Fields\Checkbox;
+use Pingu\Forms\Support\Fields\Link;
 use Pingu\Forms\Support\Fields\Submit;
 use Pingu\Forms\Support\Fields\TextInput;
 use Pingu\Forms\Support\Form;
@@ -42,8 +43,18 @@ class AddContentForm extends Form
             'published' => [
 	            'field' => Checkbox::class
 	        ],
-	        'submit' => [
+	        '_submit' => [
 	        	'field' => Submit::class,
+	        ],
+	        '_back' => [
+	        	'field' => Link::class,
+	        	'options' => [
+	        		'label' => 'Back',
+	        		'url' => url()->previous()
+	        	],
+	        	'attributes' => [
+	        		'class' => 'back'
+	        	]
 	        ]
         ];
 	}
@@ -69,7 +80,7 @@ class AddContentForm extends Form
 	 */
 	public function url()
 	{
-		return ['url' => Content::transformUri('store', [$this->type], config('core.adminPrefix'))];
+		return ['url' => Content::makeUri('store', [$this->type], adminPrefix())];
 	}
 
 	/**

@@ -154,11 +154,12 @@ class Content
             $definition = $field->buildFieldDefinition();
             $definition = array_replace_recursive($definition, $field->instance->fieldDefinition());
             $fieldClass = FormField::buildFieldClass($field->machineName, $definition);
-            $form->addField($field->machineName, $fieldClass);
+            $form->addField($fieldClass);
         }
 
         $form->moveFieldDown('published')
-        	->moveFieldDown('submit');
+        	->moveFieldDown('_submit')
+        	->moveFieldDown('_back');
         
         return $form;
 	}
@@ -178,12 +179,12 @@ class Content
             $definition = array_replace_recursive($definition, $field->instance->fieldDefinition());
             $definition['options']['default'] = $value->value;
             $fieldClass = FormField::buildFieldClass($field->machineName, $definition);
-            $form->addField($field->machineName, $fieldClass);
+            $form->addField($fieldClass);
         }
 
         $form->moveFieldDown('published')
-        	->moveFieldDown('submit')
-        	->moveFieldDown('link');
+        	->moveFieldDown('_submit')
+        	->moveFieldDown('_back');
         
         return $form;
 	}

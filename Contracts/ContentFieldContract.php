@@ -13,12 +13,6 @@ interface ContentFieldContract extends FormableContract{
 	public function field();
 
 	/**
-	 * Field class used to display this field in a form
-	 * @return string
-	 */
-	public function fieldType();
-
-	/**
 	 * Field definition, return an array as expected by a Form
 	 * @return array
 	 */
