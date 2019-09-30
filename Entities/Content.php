@@ -3,12 +3,20 @@
 namespace Pingu\Content\Entities;
 
 use Illuminate\Support\Str;
+use Pingu\Content\Accessors\ContentAccessor;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\FieldValue;
 use Pingu\Content\Events\ContentCreated;
 use Pingu\Content\Events\CreatingContent;
+use Pingu\Content\Forms\ContentForms;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Core\Traits\Models\HasBasicCrudUris;
+use Pingu\Entity\Contracts\Accessor;
+use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Entity\Contracts\EntityContract;
+use Pingu\Entity\Contracts\EntityFormsBase;
+use Pingu\Entity\Traits\Models\Entity;
+use Pingu\Entity\Uris\EntityUris;
 use Pingu\Forms\Support\Fields\Checkbox;
 use Pingu\Forms\Support\Fields\ModelSelect;
 use Pingu\Forms\Support\Fields\TextInput;
@@ -22,36 +30,35 @@ use Pingu\Jsgrid\Fields\Text as JsGridText;
 use Pingu\Jsgrid\Traits\Models\JsGridable;
 use Pingu\User\Entities\User;
 
-class Content extends BaseModel implements JsGridableContract
+class Content extends BaseModel implements JsGridableContract, EntityContract
 {
-    use Formable, JsGridable, HasBasicCrudUris;
+    use Formable, JsGridable, HasBasicCrudUris, Entity;
 
     protected $dispatchesEvents =[
         'creating' => CreatingContent::class,
         'created' => ContentCreated::class
     ];
 
-    protected $casts = [
-        'published' => 'boolean'
-    ];
-
-    protected $attributes = [
-        'published' => true
-    ];
-
     protected $with = ['content_type', 'creator'];
 
-    protected $fillable = ['title', 'published'];
+    protected $visible = ['id', 'content_type', 'creator', 'created_at', 'updated_at', 'slug'];
 
-    protected $visible = ['id', 'slug', 'title', 'content_type', 'creator', 'published', 'created_at', 'updated_at'];
-
-    public static $reservedFieldNames = ['id', 'slug', 'title', 'content_type_id', 'creator_id', 'published', 'created_at', 'updated_at'];
-
-    public function generateSlug(?string $slug = null, $first = true)
+    public function getRouteKeyName()
     {
-        if(is_null($slug)) $slug = Str::slug($this->title);
+        return 'slug';
+    }
 
-        if($this::where(['slug' => $slug])->first()){
+    public function bundle(): BundleContract
+    {
+        return $this->content_type;
+    }
+
+    public function generateSlug(?string $slug = null, $ignore = null, $first = true)
+    {
+        if(is_null($slug)) $slug = Str::slug($this->getBundleFieldValue('title'));
+
+        if($model = $this::where(['slug' => $slug])->first()){
+            if($ignore and $ignore->id == $model->id) return $slug;
             if($first){
                 $slug .= '-1';
             }
@@ -61,7 +68,7 @@ class Content extends BaseModel implements JsGridableContract
                 unset($elems[sizeof($elems)-1]);
                 $slug = implode('-', $elems).'-'.$num; 
             }
-            return $this->generateSlug($slug, false);
+            return $this->generateSlug($slug, $ignore, false);
         }
         return $slug;
     }
@@ -77,17 +84,9 @@ class Content extends BaseModel implements JsGridableContract
     /**
      * @inheritDoc
      */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function formAddFields()
     {
-        return ['title', 'published'];
+        return [];
     }
 
     /**
@@ -95,7 +94,7 @@ class Content extends BaseModel implements JsGridableContract
      */
     public function formEditFields()
     {
-        return ['title', 'published'];
+        return [];
     }
 
     /**
@@ -104,18 +103,6 @@ class Content extends BaseModel implements JsGridableContract
     public function fieldDefinitions()
     {
         return [
-    		'title' => [
-    			'field' => TextInput::class,
-                'attributes' => [
-                    'required' => true
-                ]
-    		],
-    		'published' => [
-    			'field' => Checkbox::class,
-                'options' => [
-                    'type' => Boolean::class
-                ]
-    		],
             'content_type' => [
                 'field' => ModelSelect::class,
                 'options' => [
@@ -132,6 +119,9 @@ class Content extends BaseModel implements JsGridableContract
                     'model' => User::class,
                     'textField' => 'name'
                 ]
+            ],
+            'slug' => [
+                'field' => TextInput::class
             ]
     	];
     }
@@ -141,10 +131,7 @@ class Content extends BaseModel implements JsGridableContract
      */
 	public function validationRules()
     {
-        return [
-            'title' => 'required|string',
-            'published' => 'boolean'
-        ];
+        return [];
     }
 
     /**
@@ -152,8 +139,33 @@ class Content extends BaseModel implements JsGridableContract
      */
     public function validationMessages()
     {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsGridFields()
+    {
         return [
-            'title.required' => 'Title is required'
+            'content_type' => [
+                'type' => JsGridModelSelect::class,
+                'options' => [
+                    'editing' => false
+                ]
+            ],
+            'creator' => [
+                'type' => JsGridModelSelect::class,
+                'options' => [
+                    'editing' => false
+                ]
+            ],
+            'slug' => [
+                'type' => JsGridText::class,
+                'options' => [
+                    'visible' => false
+                ]
+            ]
         ];
     }
 
@@ -175,77 +187,25 @@ class Content extends BaseModel implements JsGridableContract
         return $this->belongsTo(ContentType::class);
     }
 
-    /**
-     * values relation
-     * @return Collection
-     */
-    public function values()
+    public function accessor(): Accessor
     {
-        return $this->hasMany(FieldValue::class);
+        return new ContentAccessor($this);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsGridFields()
+    public function forms(): EntityFormsBase
     {
-        return [
-            'title' => [
-                'type' => JsGridText::class
-            ],
-            'content_type' => [
-                'type' => JsGridModelSelect::class,
-                'options' => [
-                    'editing' => false
-                ]
-            ],
-            'creator' => [
-                'type' => JsGridModelSelect::class,
-                'options' => [
-                    'editing' => false
-                ]
-            ],
-            'published' => [
-                'type' => JsGridCheckbox::class
-            ]
-        ];
+        return new ContentForms($this);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public static function createUri()
+    public function afterJsGridFieldsBuilt(array $fields)
     {
-        return static::routeSlug().'/{'.ContentType::routeSlug().'}/create';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function storeUri()
-    {
-        return static::routeSlug().'/{'.ContentType::routeSlug().'}';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function deleteUri()
-    {
-        return static::routeSlug().'/{'.Content::routeSlug().'}/delete';
-    }
-
-    /**
-     * Override save to generate the slug
-     * @param  array  $options [description]
-     * @return [type]          [description]
-     */
-    public function save($options = [])
-    {
-        if($this->isDirty('title')){
-            $this->attributes['slug'] = $this->generateSlug();
-        }
-        parent::save($options);
+        $field = new TextInput('title', [], ['required' => true]);
+        $jsField = new JsGridText('#fieldTitle', [], $field);
+        array_unshift($fields, $jsField);
+        $field = new Checkbox('published', ['type' => Boolean::class], []);
+        $jsField = new JsGridCheckbox('#fieldPublished', [], $field);
+        $fields[] = $jsField;
+        return $fields;
     }
 
 }

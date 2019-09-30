@@ -48,6 +48,16 @@ class JsGridContentController extends JsGridModelController
     }
 
     /**
+     * The url used by jsgrid to redirect when an element is clicked
+     * 
+     * @return string
+     */
+    protected function getClickLink()
+    {
+        return 'entity/content/{id}';
+    }
+
+    /**
      * @inheritDoc
      */
     public function index(Request $request)

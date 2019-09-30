@@ -12,6 +12,17 @@ class ContentPolicy
     use HandlesAuthorization;
 
     /**
+     * Create access
+     * @param  User    $user
+     * @return bool
+     */
+    public function create(User $user, ContentType $type)
+    {
+        $perm = $this->permName('create '.Str::plural($type->machineName));
+        return $user->hasPermissionTo($perm);
+    }
+
+    /**
      * View access
      * @param  User    $user
      * @param  Content $content

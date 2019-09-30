@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
 use Pingu\Content\Content;
+use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Fields\FieldBoolean;
 use Pingu\Content\Entities\Fields\FieldDatetime;
 use Pingu\Content\Entities\Fields\FieldEmail;
@@ -15,9 +16,8 @@ use Pingu\Content\Entities\Fields\FieldText;
 use Pingu\Content\Entities\Fields\FieldTextLong;
 use Pingu\Content\Entities\Fields\FieldUrl;
 use Pingu\Content\Events\ContentTypeCreated;
-use Pingu\Content\Http\Middleware\DeletableContentField;
-use Pingu\Content\Http\Middleware\EditableContentField;
 use Pingu\Content\Listeners\ContentTypeCreated as ContentTypeCreatedListener;
+use Pingu\Content\Observers\ContentTypeObserver;
 use Pingu\Content\Policies\ContentPolicy;
 use Pingu\Core\Support\ModuleServiceProvider;
 
@@ -36,7 +36,9 @@ class ContentServiceProvider extends ModuleServiceProvider
         ]
     ];
 
-    protected $modelFolder = 'Entities';
+    protected $entities = [
+        ContentType::class
+    ];
 
     /**
      * Boot the application events.
@@ -45,15 +47,19 @@ class ContentServiceProvider extends ModuleServiceProvider
      */
     public function boot(Router $router, Gate $gate)
     {
-        $this->registerModelSlugs(__DIR__.'/../'.$this->modelFolder);
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'content');
         $this->registerFactories();
-        $this->registerContentFields();
+        $this->registerEntities($this->entities);
 
-        $router->aliasMiddleware('deletableContentField', DeletableContentField::class);
-        $router->aliasMiddleware('editableContentField', EditableContentField::class);
+        if(\Schema::hasTable('content_types')){
+            foreach(ContentType::all() as $contentType){
+                \Entity::registerBundle($contentType);
+            }
+        }
+
+        ContentType::observe(ContentTypeObserver::class);
     }
 
     /**
@@ -67,20 +73,6 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
-    }
-
-    protected function registerContentFields()
-    {
-        \Content::registerContentFields([
-            FieldBoolean::class,
-            FieldDatetime::class,
-            FieldEmail::class,
-            FieldFloat::class,
-            FieldInteger::class,
-            FieldText::class,
-            FieldTextLong::class,
-            FieldUrl::class
-        ]);
     }
 
     /**

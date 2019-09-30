@@ -2,20 +2,17 @@
 
 namespace Pingu\Content\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
-use Pingu\Content\Events\ContentValidatorCreated;
 use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Forms\Fields\Boolean;
-use Pingu\Forms\Fields\Text;
-use Pingu\Forms\Form;
-use Pingu\Jsgrid\Traits\Controllers\JsGrid;
+use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Entity\Traits\Controllers\EntityController;
 
 class AdminContentController extends BaseController
 {
+    use EntityController;
+
     public function createIndex()
     {
         $types = ContentType::all();
@@ -31,95 +28,72 @@ class AdminContentController extends BaseController
         ]);
     }
 
+    protected function getStoreUri(BundleContract $bundle): array
+    {
+        return ['url' => Content::makeUri('store', [$bundle], adminPrefix())];
+    }
+
     /**
      * Show the form for creating a new resource.
      * @return Response
      */
-    public function create(Request $request, ContentType $type)
-    {
-        $form = \Content::getCreateContentForm($type);
+    // public function create(Request $request, ContentType $type)
+    // {
+    //     $form = new AddContentForm($type);
 
-        return view('content::addContent')->with([
-            'form' => $form,
-            'title' => 'Add a '.$type->name,
-            'contentType' => $type
-        ]);
-    }
+    //     return view('content::addContent')->with([
+    //         'form' => $form,
+    //         'title' => 'Add a '.$type->name,
+    //         'contentType' => $type
+    //     ]);
+    // }
 
     /**
      * Store a newly created resource in storage.
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request, ContentType $type)
-    {
-        $validator = $this->makeContentValidator($request, $type);
-        $validator->validate();
-        $validated = $validator->validated();
+    // public function store(StoreContentRequest $request, ContentType $type)
+    // {
+    //     $validated = $request->validated();
 
-        $content = \Content::createContent($type, $validated);
+    //     $content = \Content::createContent($type, $validated);
 
-        \Notify::success($type->name." '".$content->title."' has been created");
+    //     \Notify::success($type->name." ".$content->fieldTitle." has been created");
 
-        return redirect()->route('content.admin.content');
-    }
+    //     return redirect()->route('content.admin.content');
+    // }
 
     /**
      * Show the form for creating a new resource.
      * @return Response
      */
-    public function edit(Request $request, Content $content)
-    {
-        $form = \Content::getEditContentForm($content);
+    // public function edit(Request $request, Content $content)
+    // {
+    //     $form = new EditContentForm($content);
 
-        return view('content::editContent')->with([
-            'form' => $form,
-            'title' => 'Edit '.$content->title,
-            'contentType' => $content->content_type,
-            'content' => $content,
-            'deleteUri' => $content::makeUri('delete', [$content])
-        ]);
-    }
+    //     return view('content::editContent')->with([
+    //         'form' => $form,
+    //         'title' => 'Edit '.$content->title,
+    //         'contentType' => $content->content_type,
+    //         'content' => $content,
+    //         'deleteUri' => $content::makeUri('delete', [$content])
+    //     ]);
+    // }
 
     /**
      * Updates a content
      * @param Request $request
      * @return Response
      */
-    public function update(Request $request, Content $content)
-    {
-        $validator = $this->makeContentValidator($request, $content->content_type);
-        $validator->validate();
-        $validated = $validator->validated();
+    // public function update(UpdateContentRequest $request, Content $content)
+    // {
+    //     $validated = $request->validated();
 
-        $content = \Content::updateContent($content, $validated);
+    //     $content = \Content::updateContent($content, $validated);
 
-        \Notify::success($content->title."' has been updated");
+    //     \Notify::success($content->content_type->name.' '.$content->fieldTitle." has been updated");
 
-        return redirect()->route('content.admin.content');
-    }
-
-    /**
-     * Make a validator for a content type content
-     * @param  Request     $request
-     * @param  ContentType $type
-     * @return Validator
-     */
-    protected function makeContentValidator(Request $request, ContentType $type)
-    {
-        $rules = ['title' => 'required|string', 'published' => 'boolean'];
-        $messages = ['title.required' => $type->titleField.' is required'];
-
-        foreach($type->fields as $field){
-            $rules[$field->machineName] = $field->instance->fieldValidationRules();
-            foreach($field->instance->fieldValidationMessages() as $name => $message){
-                $messages[$field->machineName.'.'.$name] = $message;
-            }
-        }
-
-        $validator = \Validator::make($request->post(), $rules, $messages);
-        event(new ContentValidatorCreated($validator, $type));
-
-        return $validator;
-    }
+    //     return redirect()->route('content.admin.content');
+    // }
 }
