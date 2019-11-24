@@ -2,21 +2,23 @@
 
 namespace Pingu\Content\Entities;
 
+use Illuminate\Support\Str;
+use Pingu\Content\Bundles\ContentTypeBundle;
 use Pingu\Content\Entities\Content;
-use Pingu\Content\Routes\Entities\ContentTypeRoutes;
+use Pingu\Content\Entities\Policies\ContentTypePolicy;
+use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\HasMachineName;
-use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Contracts\EntityContract;
-use Pingu\Entity\Contracts\Routes;
-use Pingu\Entity\Entities\BaseEntity;
-use Pingu\Entity\Traits\EntityBundle;
-use Pingu\Forms\Support\Fields\TextInput;
-use Pingu\Forms\Support\Types\Text;
-use Pingu\Jsgrid\Fields\Text as JsGridText;
+use Pingu\Core\Traits\Models\Revisionnable;
+use Pingu\Core\Traits\Models\UpdatedBy;
+use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Traits\IsBundle;
 
-class ContentType extends BaseEntity implements BundleContract
+class ContentType extends Entity
 {
-	use HasMachineName, EntityBundle;
+    use HasMachineName,
+        CreatedBy,
+        UpdatedBy,
+        IsBundle;
 
     protected $fillable = ['name', 'machineName','description'];
 
@@ -29,102 +31,19 @@ class ContentType extends BaseEntity implements BundleContract
     /**
      * @inheritDoc
      */
-    public function formAddFields()
-    {
-        return ['name', 'machineName','description'];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function formEditFields()
-    {
-        return ['name','description'];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fieldDefinitions()
-    {
-        return [
-            'name' => [
-                'field' => TextInput::class,
-                'options' => [
-                    'type' => Text::class
-                ],
-                'attributes' => [
-                    'required' => true
-                ]
-            ],
-            'description' => [
-                'field' => TextInput::class,
-                'options' => [
-                    'type' => Text::class
-                ],
-            ],
-            'machineName' => [
-                'field' => TextInput::class,
-                'attributes' => [
-                    'class' => 'js-dashify',
-                    'data-dashifyfrom' => 'name',
-                    'required' => true,
-                    'type' => Text::class
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validationRules()
-    {
-        return [
-            'name' => 'required|string',
-            'description' => 'sometimes|string',
-            'machineName' => 'required|unique:content_types,machineName,'.$this->id.',id'
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validationMessages()
-    {
-        return [
-            'name.required' => 'Name is required',
-            'machineName.required' => 'Machine Name is required',
-            'machineName.unique' => 'Machine name already exists'
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getRouteKeyName()
     {
         return 'machineName';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function jsGridFields()
+    public function bundleName(): string
     {
-    	return [
-    		'name' => [
-    			'type' => JsGridText::class
-    		],
-            'description' => [
-                'type' => JsGridText::class
-            ]
-    	];
+        return 'content.'.$this->machineName;
     }
 
-    public function routes(): Routes
+    public function getPolicy(): string
     {
-        return new ContentTypeRoutes($this);
+        return ContentTypePolicy::class;
     }
 
     /**
@@ -137,17 +56,7 @@ class ContentType extends BaseEntity implements BundleContract
         return $this->hasMany(Content::class);
     }
 
-    public function bundleFriendlyName(): string
-    {
-        return $this->name;
-    }
-
-    public function bundleName(): string
-    {
-        return class_basename(get_class($this)).'.'.$this->machineName;
-    }
-
-    public function createEntity(array $values): EntityContract
+    public function createEntity(array $values): Entity
     {
         $content = new Content();
         $content->content_type()->associate($this);
@@ -156,5 +65,10 @@ class ContentType extends BaseEntity implements BundleContract
         $content->save();
         $content->saveFieldValues($values);
         return $content;
+    }
+
+    public static function bundleClass()
+    {
+        return ContentTypeBundle::class;
     }
 }

@@ -5,16 +5,11 @@ namespace Pingu\Content\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
+use Pingu\Content\Bundles\ContentTypeBundle;
+use Pingu\Content\Config\ContentSettings;
 use Pingu\Content\Content;
+use Pingu\Content\Entities\Content as ContentModel;
 use Pingu\Content\Entities\ContentType;
-use Pingu\Content\Entities\Fields\FieldBoolean;
-use Pingu\Content\Entities\Fields\FieldDatetime;
-use Pingu\Content\Entities\Fields\FieldEmail;
-use Pingu\Content\Entities\Fields\FieldFloat;
-use Pingu\Content\Entities\Fields\FieldInteger;
-use Pingu\Content\Entities\Fields\FieldText;
-use Pingu\Content\Entities\Fields\FieldTextLong;
-use Pingu\Content\Entities\Fields\FieldUrl;
 use Pingu\Content\Events\ContentTypeCreated;
 use Pingu\Content\Listeners\ContentTypeCreated as ContentTypeCreatedListener;
 use Pingu\Content\Observers\ContentTypeObserver;
@@ -37,7 +32,8 @@ class ContentServiceProvider extends ModuleServiceProvider
     ];
 
     protected $entities = [
-        ContentType::class
+        ContentType::class,
+        ContentModel::class
     ];
 
     /**
@@ -51,14 +47,7 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->registerConfig();
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'content');
         $this->registerFactories();
-        $this->registerEntities($this->entities);
-
-        if(\Schema::hasTable('content_types')){
-            foreach(ContentType::all() as $contentType){
-                \Entity::registerBundle($contentType);
-            }
-        }
-
+        
         ContentType::observe(ContentTypeObserver::class);
     }
 
@@ -69,10 +58,13 @@ class ContentServiceProvider extends ModuleServiceProvider
      */
     public function register()
     {
+        \Settings::register(new ContentSettings, $this->app);
         $this->app->singleton('content.content', Content::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
+        $this->registerEntities($this->entities);
+        ContentTypeBundle::registerAll();
     }
 
     /**

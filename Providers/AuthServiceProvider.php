@@ -16,10 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        Content::class => ContentPolicy::class,
-        ContentType::class => ContentTypePolicy::class
-    ];
+    protected $policies = [];
 
     /**
      * Register any application authentication / authorization services.
@@ -29,11 +26,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(Gate $gate)
     {
-        $this->registerPolicies($gate);
-
-        \Gate::define('edit-content', 'Pingu\Content\Policies\ContentPolicy@edit');
-        \Gate::define('view-content', 'Pingu\Content\Policies\ContentPolicy@view');
-        \Gate::define('delete-content', 'Pingu\Content\Policies\ContentPolicy@delete');
-        \Gate::define('create-content', 'Pingu\Content\Policies\ContentTypePolicy@create');
+        // $this->registerPolicies($gate);
     }
 } 

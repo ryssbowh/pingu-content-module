@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class M2019_08_09_180040000180_Install extends Migration
+class M2019_08_09_180040000180_InstallContent extends Migration
 {
     /**
      * Run the migrations.
@@ -18,6 +18,8 @@ class M2019_08_09_180040000180_Install extends Migration
             $table->string('name');
             $table->string('machineName');
             $table->text('description');
+            $table->updatedBy();
+            $table->createdBy();
             $table->timestamps();
         });
 
@@ -26,8 +28,10 @@ class M2019_08_09_180040000180_Install extends Migration
             $table->string('slug')->nullable();
             $table->integer('content_type_id')->unsigned()->index();
             $table->foreign('content_type_id')->references('id')->on('content_types');
-            $table->integer('creator_id')->unsigned()->index();
-            $table->foreign('creator_id')->references('id')->on('users')->onCascade('delete');
+            $table->updatedBy();
+            $table->createdBy();
+            $table->deletedBy();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

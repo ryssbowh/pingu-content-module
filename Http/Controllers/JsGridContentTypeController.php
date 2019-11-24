@@ -8,7 +8,6 @@ use Illuminate\Http\Response;
 use Pingu\Content\Entities\ContentField;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Field;
-use Pingu\Content\Entities\Fields\FieldText;
 use Pingu\Content\Forms\ContentFieldForm;
 use Pingu\Core\Entities\BaseModel;
 use Pingu\Forms\Fields\Model;

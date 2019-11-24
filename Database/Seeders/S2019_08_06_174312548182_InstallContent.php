@@ -6,15 +6,13 @@ use Pingu\Content\ContentEntityType;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Core\Seeding\DisableForeignKeysTrait;
 use Pingu\Core\Seeding\MigratableSeeder;
-use Pingu\Entity\Entities\Fields\FieldBoolean;
-use Pingu\Entity\Entities\Fields\FieldText;
-use Pingu\Entity\Entities\Fields\FieldTextLong;
+use Pingu\Field\Entities\BundleField;
 use Pingu\Menu\Entities\Menu;
 use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
 use Pingu\User\Entities\Role;
 
-class S2019_08_06_174312548182_Install extends MigratableSeeder
+class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
 {
     use DisableForeignKeysTrait;
 
@@ -23,12 +21,16 @@ class S2019_08_06_174312548182_Install extends MigratableSeeder
      */
     public function run(): void
     {
+        \Settings::repository('content')->create();
+
         $admin = Role::find(4);
         $viewContent = Permission::findOrCreate(['name' => 'view content','section' => 'Content', 'helper' => 'View all content in back-end']);
         $viewTypes = Permission::findOrCreate(['name' => 'view content types','section' => 'Content', 'helper' => 'View all content types in back end']);
         $admin->givePermissionTo([
             $viewContent,
             $viewTypes,
+            Permission::findOrCreate(['name' => 'view content settings','section' => 'Content']),
+            Permission::findOrCreate(['name' => 'edit content settings','section' => 'Content']),
             Permission::findOrCreate(['name' => 'add content types','section' => 'Content']),
             Permission::findOrCreate(['name' => 'edit content types','section' => 'Content', 'helper' => 'Edit all content types (name and fields)']),
             Permission::findOrCreate(['name' => 'delete content types','section' => 'Content'], 'Delete all content types (and content associated to it)'),

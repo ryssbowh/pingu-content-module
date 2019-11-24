@@ -1,13 +1,14 @@
 <?php
 
-namespace Pingu\Content\Policies;
+namespace Pingu\Content\Entities\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
+use Pingu\Core\Support\Policy;
 use Pingu\User\Entities\User;
 
-class ContentPolicy
+class ContentPolicy extends Policy
 {
     use HandlesAuthorization;
 

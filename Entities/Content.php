@@ -2,37 +2,26 @@
 
 namespace Pingu\Content\Entities;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use Pingu\Content\Accessors\ContentAccessor;
 use Pingu\Content\Entities\ContentType;
-use Pingu\Content\Entities\FieldValue;
+use Pingu\Content\Entities\Policies\ContentPolicy;
 use Pingu\Content\Events\ContentCreated;
 use Pingu\Content\Events\CreatingContent;
-use Pingu\Content\Forms\ContentForms;
-use Pingu\Core\Entities\BaseModel;
-use Pingu\Core\Traits\Models\HasBasicCrudUris;
-use Pingu\Entity\Contracts\Accessor;
-use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Contracts\EntityContract;
-use Pingu\Entity\Contracts\EntityFormsBase;
-use Pingu\Entity\Traits\Models\Entity;
-use Pingu\Entity\Uris\EntityUris;
-use Pingu\Forms\Support\Fields\Checkbox;
-use Pingu\Forms\Support\Fields\ModelSelect;
-use Pingu\Forms\Support\Fields\TextInput;
-use Pingu\Forms\Support\Types\Boolean;
-use Pingu\Forms\Support\Types\Model;
-use Pingu\Forms\Traits\Models\Formable;
-use Pingu\Jsgrid\Contracts\Models\JsGridableContract;
-use Pingu\Jsgrid\Fields\Checkbox as JsGridCheckbox;
-use Pingu\Jsgrid\Fields\ModelSelect as JsGridModelSelect;
-use Pingu\Jsgrid\Fields\Text as JsGridText;
-use Pingu\Jsgrid\Traits\Models\JsGridable;
-use Pingu\User\Entities\User;
+use Pingu\Core\Traits\Models\CreatedBy;
+use Pingu\Core\Traits\Models\DeletedBy;
+use Pingu\Core\Traits\Models\UpdatedBy;
+use Pingu\Entity\Contracts\HasBundleContract;
+use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Traits\IsBundled;
 
-class Content extends BaseModel implements JsGridableContract, EntityContract
+class Content extends Entity implements HasBundleContract
 {
-    use Formable, JsGridable, HasBasicCrudUris, Entity;
+    use SoftDeletes,
+        CreatedBy,
+        DeletedBy,
+        UpdatedBy,
+        IsBundled;
 
     protected $dispatchesEvents =[
         'creating' => CreatingContent::class,
@@ -48,9 +37,12 @@ class Content extends BaseModel implements JsGridableContract, EntityContract
         return 'slug';
     }
 
-    public function bundle(): BundleContract
+    public function bundleName(): ?string
     {
-        return $this->content_type;
+        if ($this->content_type) {
+            return 'content.'.$this->content_type->machineName;
+        }
+        return null;
     }
 
     public function generateSlug(?string $slug = null, $ignore = null, $first = true)
@@ -76,110 +68,14 @@ class Content extends BaseModel implements JsGridableContract, EntityContract
     /**
      * @inheritDoc
      */
-    public static function routeSlug()
+    public static function routeSlug(): string
     {
         return 'content';
     }
 
     /**
-     * @inheritDoc
-     */
-    public function formAddFields()
-    {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function formEditFields()
-    {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function fieldDefinitions()
-    {
-        return [
-            'content_type' => [
-                'field' => ModelSelect::class,
-                'options' => [
-                    'type' => Model::class,
-                    'label' => 'Type',
-                    'model' => ContentType::class,
-                    'textField' => 'name',
-                ]
-            ],
-            'creator' => [
-                'field' => ModelSelect::class,
-                'options' => [
-                    'type' => Model::class,
-                    'model' => User::class,
-                    'textField' => 'name'
-                ]
-            ],
-            'slug' => [
-                'field' => TextInput::class
-            ]
-    	];
-    }
-
-    /**
-     * @inheritDoc
-     */
-	public function validationRules()
-    {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validationMessages()
-    {
-        return [];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function jsGridFields()
-    {
-        return [
-            'content_type' => [
-                'type' => JsGridModelSelect::class,
-                'options' => [
-                    'editing' => false
-                ]
-            ],
-            'creator' => [
-                'type' => JsGridModelSelect::class,
-                'options' => [
-                    'editing' => false
-                ]
-            ],
-            'slug' => [
-                'type' => JsGridText::class,
-                'options' => [
-                    'visible' => false
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * Creator relation
-     * @return User
-     */
-    public function creator()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      * Content type relation
+     * 
      * @return ContentType
      */
     public function content_type()
@@ -187,25 +83,9 @@ class Content extends BaseModel implements JsGridableContract, EntityContract
         return $this->belongsTo(ContentType::class);
     }
 
-    public function accessor(): Accessor
+    public function getPolicy(): string
     {
-        return new ContentAccessor($this);
-    }
-
-    public function forms(): EntityFormsBase
-    {
-        return new ContentForms($this);
-    }
-
-    public function afterJsGridFieldsBuilt(array $fields)
-    {
-        $field = new TextInput('title', [], ['required' => true]);
-        $jsField = new JsGridText('#fieldTitle', [], $field);
-        array_unshift($fields, $jsField);
-        $field = new Checkbox('published', ['type' => Boolean::class], []);
-        $jsField = new JsGridCheckbox('#fieldPublished', [], $field);
-        $fields[] = $jsField;
-        return $fields;
+        return ContentPolicy::class;
     }
 
 }

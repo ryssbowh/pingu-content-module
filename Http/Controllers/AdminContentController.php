@@ -7,18 +7,16 @@ use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Core\Http\Controllers\BaseController;
 use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Traits\Controllers\EntityController;
+use Pingu\Entity\Http\Controllers\AdminEntityController;
 
-class AdminContentController extends BaseController
+class AdminContentController extends AdminEntityController
 {
-    use EntityController;
-
     public function createIndex()
     {
         $types = ContentType::all();
         $available = [];
-        foreach($types as $type){
-            if(\Auth::user()->can('create '.Str::plural($type->machineName))){
+        foreach ($types as $type) {
+            if (\Auth::user()->can('create '.Str::plural($type->machineName))) {
                 $available[] = $type;
             }
         }
@@ -28,10 +26,10 @@ class AdminContentController extends BaseController
         ]);
     }
 
-    protected function getStoreUri(BundleContract $bundle): array
-    {
-        return ['url' => Content::makeUri('store', [$bundle], adminPrefix())];
-    }
+    // protected function getStoreUri(Entity $entity): array
+    // {
+    //     return ['url' => Content::makeUri('store', [$entity], adminPrefix())];
+    // }
 
     /**
      * Show the form for creating a new resource.

@@ -2,7 +2,6 @@
 
 return [
     'name' => 'Content',
-	'content_types' => [
-		'autoGivePermsToAdmin' => true
-	]
+    'autoGivePermsToAdmin' => true,
+    'createMenuItem' => true
 ];
