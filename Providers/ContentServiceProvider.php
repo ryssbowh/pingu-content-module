@@ -5,6 +5,7 @@ namespace Pingu\Content\Providers;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Routing\Router;
+use Pingu\Content\BlockProviders\ContentBlockProvider;
 use Pingu\Content\Bundles\ContentTypeBundle;
 use Pingu\Content\Config\ContentSettings;
 use Pingu\Content\Content;
@@ -65,6 +66,7 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->app->register(AuthServiceProvider::class);
         $this->registerEntities($this->entities);
         ContentTypeBundle::registerAll();
+        \Blocks::registerProvider(ContentBlockProvider::class);
     }
 
     /**

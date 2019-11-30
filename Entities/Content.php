@@ -28,18 +28,25 @@ class Content extends Entity implements HasBundleContract
         'created' => ContentCreated::class
     ];
 
-    protected $with = ['content_type', 'creator'];
+    protected $with = ['content_type', 'createdBy'];
 
-    protected $visible = ['id', 'content_type', 'creator', 'created_at', 'updated_at', 'slug'];
+    protected $visible = ['id', 'content_type', 'createdBy', 'created_at', 'updated_at'];
 
-    public function getRouteKeyName()
+    public $adminListFields = ['field_title'];
+
+    public function getFieldTitleFriendlyValue()
     {
-        return 'slug';
+        return $this->field_title[0];
+    }
+
+    public function getRouteKey()
+    {
+        return $this->field_slug[0];
     }
 
     public function bundleName(): ?string
     {
-        if ($this->content_type) {
+        if ($this->exists and $this->content_type) {
             return 'content.'.$this->content_type->machineName;
         }
         return null;

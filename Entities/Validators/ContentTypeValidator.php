@@ -6,6 +6,9 @@ use Pingu\Field\Support\FieldValidator\BaseFieldsValidator;
 
 class ContentTypeValidator extends BaseFieldsValidator
 {
+    /**
+     * @inheritDoc
+     */
     protected function rules(): array
     {
         return [
@@ -15,6 +18,9 @@ class ContentTypeValidator extends BaseFieldsValidator
         ];
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function messages(): array
     {
         return [

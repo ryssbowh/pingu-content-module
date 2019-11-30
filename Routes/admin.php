@@ -14,5 +14,5 @@
  * Content
  */
 
-Route::get('content/create', ['uses' => 'AdminContentController@createIndex'])
+Route::get('content/create', ['uses' => 'ContentAdminController@createIndex'])
     ->name('content.admin.create');

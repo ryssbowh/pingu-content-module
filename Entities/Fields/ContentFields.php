@@ -3,19 +3,16 @@
 namespace Pingu\Content\Entities\Fields;
 
 use Pingu\Field\BaseFields\Text;
-use Pingu\Field\Support\FieldRepository\BaseFieldRepository;
+use Pingu\Field\Support\FieldRepository\BundledEntityFieldRepository;
 
-class ContentFields extends BaseFieldRepository
+class ContentFields extends BundledEntityFieldRepository
 {
+    /**
+     * @inheritDoc
+     */
     protected function fields(): array
     {
         return [
-            new Text(
-                'slug',
-                [
-                    'required' => true
-                ]
-            )
         ];
     }
 }

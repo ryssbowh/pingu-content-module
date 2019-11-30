@@ -7,6 +7,9 @@ use Pingu\Field\Support\FieldRepository\BaseFieldRepository;
 
 class ContentTypeFields extends BaseFieldRepository
 {
+    /**
+     * @inheritDoc
+     */
     protected function fields(): array
     {
         return [

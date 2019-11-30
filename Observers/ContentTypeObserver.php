@@ -120,6 +120,20 @@ class ContentTypeObserver
             'editable' => 0
         ], $bundle, $titleField);
 
+        $titleField = FieldText::create([
+            'default' => '',
+            'required' => true
+        ]);
+
+        BundleField::create([
+            'name' => 'Slug',
+            'machineName' => 'slug',
+            'helper' => 'The slug of the content',
+            'cardinality' => 1,
+            'deletable' => 0,
+            'editable' => 0
+        ], $bundle, $titleField);
+
         $contentField = FieldTextLong::create([
             'default' => '',
             'required' => false
