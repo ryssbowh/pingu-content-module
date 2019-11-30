@@ -60,7 +60,6 @@ class ContentServiceProvider extends ModuleServiceProvider
     public function register()
     {
         \Settings::register(new ContentSettings, $this->app);
-        $this->app->singleton('content.content', Content::class);
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);

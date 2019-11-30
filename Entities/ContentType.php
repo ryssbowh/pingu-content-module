@@ -6,6 +6,8 @@ use Illuminate\Support\Str;
 use Pingu\Content\Bundles\ContentTypeBundle;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\Policies\ContentTypePolicy;
+use Pingu\Content\Events\ContentTypeCreated;
+use Pingu\Content\Events\ContentTypeDeleted;
 use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\HasMachineName;
 use Pingu\Core\Traits\Models\Revisionnable;
@@ -27,6 +29,11 @@ class ContentType extends Entity
     protected $observables = ['bundleCreated'];
 
     public $adminListFields = ['name', 'description'];
+
+    protected $dispatchesEvents =[
+        'deleted' => ContentTypeDeleted::class,
+        'created' => ContentTypeCreated::class
+    ];
 
     /**
      * @inheritDoc

@@ -9,7 +9,6 @@
         "Pingu\\Content\\Providers\\ContentServiceProvider"
     ],
     "aliases": {
-        "Content": "Pingu\\Content\\Facades\\Content"
     },
     "files": [],
     "requires": []

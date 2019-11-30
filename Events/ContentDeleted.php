@@ -3,9 +3,9 @@
 namespace Pingu\Content\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Pingu\Content\Entities\ContentType;
+use Pingu\Content\Entities\Content;
 
-class ContentTypeBundleCreated
+class ContentDeleted
 {
     use SerializesModels;
 
@@ -14,9 +14,9 @@ class ContentTypeBundleCreated
      *
      * @return void
      */
-    public function __construct(ContentType $contentType)
+    public function __construct(Content $content)
     {
-        $this->contentType = $contentType;
+        $this->content = $content;
     }
 
     /**

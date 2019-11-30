@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Policies\ContentPolicy;
 use Pingu\Content\Events\ContentCreated;
-use Pingu\Content\Events\CreatingContent;
+use Pingu\Content\Events\ContentDeleted;
 use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
@@ -24,7 +24,7 @@ class Content extends Entity implements HasBundleContract
         IsBundled;
 
     protected $dispatchesEvents =[
-        'creating' => CreatingContent::class,
+        'deleted' => ContentDeleted::class,
         'created' => ContentCreated::class
     ];
 
