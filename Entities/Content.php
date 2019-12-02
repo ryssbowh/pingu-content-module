@@ -39,9 +39,9 @@ class Content extends Entity implements HasBundleContract
         return $this->field_title[0];
     }
 
-    public function getRouteKey()
+    public function getRouteKeyName()
     {
-        return $this->field_slug[0];
+        return 'field_slug';
     }
 
     public function bundleName(): ?string

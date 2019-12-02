@@ -12,7 +12,7 @@ class ContentValidator extends BaseFieldsValidator
     protected function rules(): array
     {
         return [
-            //'slug' => 'string|required|unique:contents,slug,'.$this->object->id
+            'field_slug.*' => 'string|required|unique_field:'.get_class($this->object).','.$this->object->id
         ];
     }
 
@@ -22,7 +22,7 @@ class ContentValidator extends BaseFieldsValidator
     protected function messages(): array
     {
         return [
-
+            'field_slug.*.unique_field' => 'Slug :value already exists'
         ];
     }
 }
