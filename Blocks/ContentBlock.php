@@ -2,19 +2,18 @@
 
 namespace Pingu\Content\Blocks;
 
+use Pingu\Block\Contracts\BlockContract;
 use Pingu\Block\Contracts\BlockProviderContract;
-use Pingu\Block\Contracts\BlockWithOptionsContract;
 use Pingu\Block\Entities\Block;
 use Pingu\Block\Support\Block as BlockTrait;
-use Pingu\Block\Traits\ValidatesBlockOptionsRequest;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Forms\ContentBlockOptions;
 use Pingu\Forms\Support\Form;
 
-class ContentBlock implements BlockWithOptionsContract
+class ContentBlock implements BlockContract
 {
-    use BlockTrait, ValidatesBlockOptionsRequest;
+    use BlockTrait;
 
     protected $contentType;
     protected $model;
@@ -98,7 +97,7 @@ class ContentBlock implements BlockWithOptionsContract
     /**
      * @inheritDoc
      */
-    protected function getOptionsValidationRules(): array
+    public function getOptionsValidationRules(): array
     {
         return [
             'id' => 'required|exists:contents'
@@ -108,9 +107,12 @@ class ContentBlock implements BlockWithOptionsContract
     /**
      * @inheritDoc
      */
-    protected function getOptionsValidationMessages(): array
+    public function getOptionsValidationMessages(): array
     {
-        return [];
+        return [
+            'id.required' => 'You must choose a content',
+            'id.exists' => 'This content doesn\'t exist'
+        ];
     }
 
     /**
