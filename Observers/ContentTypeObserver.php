@@ -28,7 +28,7 @@ class ContentTypeObserver
     /**
      * Creates permissions, menu items and bundle fields for a new content type
      * 
-     * @param ContentType  $contentType
+     * @param ContentType $contentType
      */
     public function created(ContentType $contentType)
     {
@@ -61,7 +61,7 @@ class ContentTypeObserver
      * Will give permissions to the role Admin if config 
      * content.autoGivePermsToAdmin is true
      * 
-     * @param  ContentType $contentType
+     * @param ContentType $contentType
      */
     protected function createPermissions(ContentType $contentType)
     {
@@ -90,13 +90,15 @@ class ContentTypeObserver
         $pluralName = Str::plural($contentType->machineName);
         $create = Permission::findByName('create '.$pluralName);
         
-        MenuItem::create([
+        MenuItem::create(
+            [
             'name' => $contentType->name,
             'url' => Content::uris()->make('create', [$contentType->bundle()], adminPrefix()),
             'active' => true,
             'deletable' => false,
             'permission_id' => $create->id
-        ], 'admin-menu', 'admin-menu.content.create');
+            ], 'admin-menu', 'admin-menu.content.create'
+        );
     }
 
     /**
@@ -106,45 +108,57 @@ class ContentTypeObserver
      */
     protected function createDefaultFields(BundleContract $bundle)
     {
-        $titleField = FieldText::create([
+        $titleField = FieldText::create(
+            [
             'default' => '',
             'required' => true
-        ]);
+            ]
+        );
 
-        BundleField::create([
+        BundleField::create(
+            [
             'name' => 'Title',
             'machineName' => 'title',
             'helper' => 'The title of the content',
             'cardinality' => 1,
             'deletable' => 0,
             'editable' => 0
-        ], $bundle, $titleField);
+            ], $bundle, $titleField
+        );
 
-        $titleField = FieldText::create([
+        $titleField = FieldText::create(
+            [
             'default' => '',
             'required' => true
-        ]);
+            ]
+        );
 
-        BundleField::create([
+        BundleField::create(
+            [
             'name' => 'Slug',
             'machineName' => 'slug',
             'helper' => 'The slug of the content',
             'cardinality' => 1,
             'deletable' => 0,
             'editable' => 0
-        ], $bundle, $titleField);
+            ], $bundle, $titleField
+        );
 
-        $contentField = FieldTextLong::create([
+        $contentField = FieldTextLong::create(
+            [
             'default' => '',
             'required' => false
-        ]);
+            ]
+        );
 
-        BundleField::create([
+        BundleField::create(
+            [
             'name' => 'Content',
             'machineName' => 'content',
             'cardinality' => 1,
             'deletable' => 1,
             'editable' => 1
-        ], $bundle, $contentField);
+            ], $bundle, $contentField
+        );
     }
 }

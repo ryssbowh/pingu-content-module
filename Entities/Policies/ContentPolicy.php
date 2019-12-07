@@ -14,7 +14,8 @@ class ContentPolicy extends BaseEntityPolicy
 
     /**
      * Create access
-     * @param  User    $user
+     *
+     * @param  User $user
      * @return bool
      */
     public function create(User $user, ContentType $type)
@@ -25,13 +26,14 @@ class ContentPolicy extends BaseEntityPolicy
 
     /**
      * View access
+     *
      * @param  User    $user
      * @param  Content $content
      * @return bool
      */
     public function view(User $user, Content $content)
     {
-        if($user == $content->creator){
+        if($user == $content->creator) {
             return true;
         }
         $perm = $this->permName('view any', $content);
@@ -40,6 +42,7 @@ class ContentPolicy extends BaseEntityPolicy
 
     /**
      * Edit access
+     *
      * @param  User    $user
      * @param  Content $content
      * @return bool
@@ -49,7 +52,7 @@ class ContentPolicy extends BaseEntityPolicy
         $any = $this->permName('edit any', $content);
         $own = $this->permName('edit own', $content);
 
-        if($user == $content->creator){
+        if($user == $content->creator) {
             return $user->hasAnyPermission([$own, $any]);
         }
         else{
@@ -59,6 +62,7 @@ class ContentPolicy extends BaseEntityPolicy
 
     /**
      * Delete access
+     *
      * @param  User    $user
      * @param  Content $content
      * @return bool
@@ -68,7 +72,7 @@ class ContentPolicy extends BaseEntityPolicy
         $any = $this->permName('delete any', $content);
         $own = $this->permName('delete own', $content);
 
-        if($user == $content->creator){
+        if($user == $content->creator) {
             return $user->hasAnyPermission([$own, $any]);
         }
         else{
@@ -78,6 +82,7 @@ class ContentPolicy extends BaseEntityPolicy
 
     /**
      * Generate a permission name from content and action
+     *
      * @param  string  $action
      * @param  Content $content
      * @return string

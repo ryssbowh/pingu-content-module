@@ -22,10 +22,12 @@ class ContentAdminController extends AdminEntityController
                 $available[] = $type;
             }
         }
-        return view('content::create')->with([
+        return view('content::create')->with(
+            [
             'types' => $available,
             'content' => Content::class
-        ]);
+            ]
+        );
     }
 
     protected function afterCreateFormCreated(Form $form, Entity $entity)

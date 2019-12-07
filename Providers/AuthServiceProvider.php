@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * Register any application authentication / authorization services.
      *
-     * @param  Gate  $gate
+     * @param  Gate $gate
      * @return void
      */
     public function boot(Gate $gate)

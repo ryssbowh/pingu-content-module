@@ -26,7 +26,8 @@ class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
         $admin = Role::find(4);
         $viewContent = Permission::findOrCreate(['name' => 'view content','section' => 'Content', 'helper' => 'View all content in back-end']);
         $viewTypes = Permission::findOrCreate(['name' => 'view content types','section' => 'Content', 'helper' => 'View all content types in back end']);
-        $admin->givePermissionTo([
+        $admin->givePermissionTo(
+            [
             $viewContent,
             $viewTypes,
             Permission::findOrCreate(['name' => 'view content settings','section' => 'Content']),
@@ -34,36 +35,45 @@ class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
             Permission::findOrCreate(['name' => 'add content types','section' => 'Content']),
             Permission::findOrCreate(['name' => 'edit content types','section' => 'Content', 'helper' => 'Edit all content types (name and fields)']),
             Permission::findOrCreate(['name' => 'delete content types','section' => 'Content'], 'Delete all content types (and content associated to it)'),
-        ]);
+            ]
+        );
 
         $menu = Menu::where(['machineName' => 'admin-menu'])->first();
-        $content = MenuItem::create([
+        $content = MenuItem::create(
+            [
             'name' => 'Content',
             'url' => 'content.admin.content',
             'deletable' => 0,
             'active' => 1,
             'permission_id' => $viewContent->id
-        ], $menu);
+            ], $menu
+        );
         $structure = MenuItem::findByMachineName('admin-menu.structure');
-        MenuItem::create([
+        MenuItem::create(
+            [
             'name' => 'Content types',
             'url' => 'content.admin.contentTypes',
             'deletable' => 0,
             'active' => 1,
             'permission_id' => $viewTypes->id
-        ], $menu, $structure);
-        MenuItem::create([
+            ], $menu, $structure
+        );
+        MenuItem::create(
+            [
             'name' => 'Create',
             'url' => 'content.admin.create',
             'active' => 1,
             'deletable' => 0,
-        ], $menu, $content); 
+            ], $menu, $content
+        ); 
 
-        $article = ContentType::create([
+        $article = ContentType::create(
+            [
             'name' => 'Article', 
             'machineName' => 'article',
             'description' => 'A basic article with only content'
-        ]);
+            ]
+        );
     }
 
     /**

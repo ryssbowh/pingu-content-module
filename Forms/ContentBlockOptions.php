@@ -36,7 +36,8 @@ class ContentBlockOptions extends BlockOptionsForm
     public function elements(): array
     {
         $fields = $this->model->fields()->toFormElements();
-        $fields = array_merge($fields, [
+        $fields = array_merge(
+            $fields, [
             new Select(
                 'id',
                 [
@@ -45,7 +46,8 @@ class ContentBlockOptions extends BlockOptionsForm
                 ]
             ),
             new Submit()
-        ]);
+            ]
+        );
         return $fields;
     }
 }
