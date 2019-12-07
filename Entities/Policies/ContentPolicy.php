@@ -5,10 +5,10 @@ namespace Pingu\Content\Entities\Policies;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
-use Pingu\Core\Support\Policy;
+use Pingu\Entity\Support\BaseEntityPolicy;
 use Pingu\User\Entities\User;
 
-class ContentPolicy extends Policy
+class ContentPolicy extends BaseEntityPolicy
 {
     use HandlesAuthorization;
 

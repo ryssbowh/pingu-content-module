@@ -3,10 +3,10 @@
 namespace Pingu\Content\Entities\Policies;
 
 use Pingu\Content\Entities\ContentType;
-use Pingu\Core\Support\Policy;
+use Pingu\Entity\Support\BaseEntityPolicy;
 use Pingu\User\Entities\User;
 
-class ContentTypePolicy extends Policy
+class ContentTypePolicy extends BaseEntityPolicy
 {
     protected function userOrGuest(?User $user)
     {

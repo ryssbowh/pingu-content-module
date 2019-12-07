@@ -14,14 +14,17 @@ use Pingu\Core\Traits\Models\UpdatedBy;
 use Pingu\Entity\Contracts\HasBundleContract;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Entity\Traits\IsBundled;
+use Pingu\Field\Contracts\HasRevisionsContract;
+use Pingu\Field\Traits\HasRevisions;
 
-class Content extends Entity implements HasBundleContract
+class Content extends Entity implements HasBundleContract, HasRevisionsContract
 {
     use SoftDeletes,
         CreatedBy,
         DeletedBy,
         UpdatedBy,
-        IsBundled;
+        IsBundled,
+        HasRevisions;
 
     protected $dispatchesEvents =[
         'deleted' => ContentDeleted::class,
@@ -54,14 +57,17 @@ class Content extends Entity implements HasBundleContract
 
     public function generateSlug(?string $slug = null, $ignore = null, $first = true)
     {
-        if(is_null($slug)) $slug = Str::slug($this->getBundleFieldValue('title'));
+        if (is_null($slug)) {
+            $slug = Str::slug($this->getBundleFieldValue('title'));
+        }
 
-        if($model = $this::where(['slug' => $slug])->first()){
-            if($ignore and $ignore->id == $model->id) return $slug;
-            if($first){
-                $slug .= '-1';
+        if ($model = $this::where(['slug' => $slug])->first()) {
+            if ($ignore and $ignore->id == $model->id) {
+                return $slug;
             }
-            else{
+            if ($first) {
+                $slug .= '-1';
+            } else {
                 $elems = explode('-', $slug);
                 $num = $elems[sizeof($elems)-1] + 1;
                 unset($elems[sizeof($elems)-1]);
@@ -90,6 +96,9 @@ class Content extends Entity implements HasBundleContract
         return $this->belongsTo(ContentType::class);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getPolicy(): string
     {
         return ContentPolicy::class;
