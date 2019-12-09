@@ -26,8 +26,6 @@ class ContentType extends Entity
 
     protected $visible = ['id', 'name', 'machineName','description'];
 
-    protected $observables = ['bundleCreated'];
-
     public $adminListFields = ['name', 'description'];
 
     protected $dispatchesEvents =[

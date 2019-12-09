@@ -11,22 +11,18 @@ use Pingu\Content\Events\ContentDeleted;
 use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
-use Pingu\Entity\Contracts\HasBundleContract;
+use Pingu\Entity\Entities\BundledEntity;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Entity\Traits\IsBundled;
-use Pingu\Field\Contracts\HasRevisionsContract;
-use Pingu\Field\Traits\HasRevisions;
 
-class Content extends Entity implements HasBundleContract, HasRevisionsContract
+class Content extends BundledEntity
 {
     use SoftDeletes,
         CreatedBy,
         DeletedBy,
-        UpdatedBy,
-        IsBundled,
-        HasRevisions;
+        UpdatedBy;
 
-    protected $dispatchesEvents =[
+    protected $dispatchesEvents = [
         'deleted' => ContentDeleted::class,
         'created' => ContentCreated::class
     ];

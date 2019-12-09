@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Entities\Entity;
 use Pingu\Entity\Http\Controllers\AdminEntityController;
 use Pingu\Forms\Support\Form;
