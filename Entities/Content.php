@@ -12,8 +12,6 @@ use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
 use Pingu\Entity\Entities\BundledEntity;
-use Pingu\Entity\Entities\Entity;
-use Pingu\Entity\Traits\IsBundled;
 
 class Content extends BundledEntity
 {

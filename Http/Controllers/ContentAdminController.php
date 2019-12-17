@@ -33,7 +33,7 @@ class ContentAdminController extends AdminEntityController
     {
         $group = $form->getElement('field_slug');
         $group->first()->classes->add('js-dashify');
-        $group->first()->attribute('data-dashifyfrom', 'field_title');
+        $group->first()->option('data-dashifyfrom', 'field_title');
     }
 
     protected function performStore(Entity $entity, array $validated)

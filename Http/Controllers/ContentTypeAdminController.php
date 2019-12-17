@@ -10,7 +10,7 @@ class ContentTypeAdminController extends AdminEntityController
 {
     protected function afterEditFormCreated(Form $form, Entity $entity)
     {
-        $form->getElement('machineName')->attribute('disabled', true);
+        $form->getElement('machineName')->option('disabled', true);
     }
 
     protected function afterCreateFormCreated(Form $form, Entity $entity)
