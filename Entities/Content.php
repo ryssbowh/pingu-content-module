@@ -12,13 +12,16 @@ use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
 use Pingu\Entity\Entities\BundledEntity;
+use Pingu\Field\Contracts\HasRevisionsContract;
+use Pingu\Field\Traits\HasRevisions;
 
-class Content extends BundledEntity
+class Content extends BundledEntity implements HasRevisionsContract
 {
     use SoftDeletes,
         CreatedBy,
         DeletedBy,
-        UpdatedBy;
+        UpdatedBy,
+        HasRevisions;
 
     protected $dispatchesEvents = [
         'deleted' => ContentDeleted::class,
