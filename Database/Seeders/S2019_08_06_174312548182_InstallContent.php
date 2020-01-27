@@ -35,6 +35,8 @@ class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
             Permission::findOrCreate(['name' => 'add content types','section' => 'Content']),
             Permission::findOrCreate(['name' => 'edit content types','section' => 'Content', 'helper' => 'Edit all content types (name and fields)']),
             Permission::findOrCreate(['name' => 'delete content types','section' => 'Content'], 'Delete all content types (and content associated to it)'),
+            \Settings::repository('content')->accessPermission(),
+            \Settings::repository('content')->editPermission(),
             ]
         );
 
