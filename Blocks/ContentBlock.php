@@ -120,7 +120,7 @@ class ContentBlock implements BlockContract
      */
     public function title(): string
     {
-        return $this->content->field_title[0];
+        return $this->content->content_type->name.' : '.$this->content->field_title[0];
     }
 
     /**
