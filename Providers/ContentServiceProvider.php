@@ -78,6 +78,9 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'content'
         );
+        $this->publishes([
+            __DIR__.'/../Config/config.php' => config_path('module-content.php')
+        ], 'config');
     }
 
     /**
