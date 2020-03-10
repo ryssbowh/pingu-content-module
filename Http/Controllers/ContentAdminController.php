@@ -21,7 +21,7 @@ class ContentAdminController extends AdminEntityController
                 $available[] = $type;
             }
         }
-        return view('content::create')->with(
+        return view('pages.content.create')->with(
             [
             'types' => $available,
             'content' => Content::class
