@@ -46,7 +46,7 @@ class ContentServiceProvider extends ModuleServiceProvider
     {
         $this->registerTranslations();
         $this->registerConfig();
-        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'content');
+        $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'content');
         $this->registerFactories();
         
         ContentType::observe(ContentTypeObserver::class);
