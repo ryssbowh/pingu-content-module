@@ -79,8 +79,8 @@ class ContentServiceProvider extends ModuleServiceProvider
             __DIR__.'/../Config/config.php', 'content'
         );
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('module-content.php')
-        ], 'config');
+            __DIR__.'/../Config/config.php' => config_path('content.php')
+        ], 'content-config');
     }
 
     /**
