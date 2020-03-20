@@ -34,7 +34,7 @@ class Content extends BundledEntity implements HasRevisionsContract
 
     public $adminListFields = ['field_title'];
 
-    public function getFieldTitleFriendlyValue()
+    public function friendlyFieldTitleValue()
     {
         return $this->field_title[0];
     }
