@@ -2,11 +2,9 @@
 
 namespace Pingu\Content\Entities\Routes;
 
-use Pingu\Content\Entities\Content;
-use Pingu\Content\Entities\ContentType;
-use Pingu\Entity\Support\BaseEntityRoutes;
+use Pingu\Entity\Support\BundledEntityRoutes;
 
-class ContentRoutes extends BaseEntityRoutes
+class ContentRoutes extends BundledEntityRoutes
 {
     protected function names(): array
     {

@@ -3,6 +3,8 @@
 namespace Pingu\Content\Entities\Policies;
 
 use Pingu\Content\Entities\ContentType;
+use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Entity\Support\BaseEntityPolicy;
 use Pingu\User\Entities\User;
 
@@ -37,7 +39,7 @@ class ContentTypePolicy extends BaseEntityPolicy
         return $user->hasPermissionTo('delete '.$entity::friendlyNames());
     }
 
-    public function create(?User $user)
+    public function create(?User $user, ?BundleContract $bundle = null)
     {
         $user = $this->userOrGuest($user);
         return $user->hasPermissionTo('edit '. ContentType::friendlyNames());

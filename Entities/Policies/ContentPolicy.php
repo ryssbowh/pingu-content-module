@@ -2,36 +2,47 @@
 
 namespace Pingu\Content\Entities\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
+use Pingu\Entity\Contracts\BundleContract;
+use Pingu\Entity\Entities\Entity;
 use Pingu\Entity\Support\BaseEntityPolicy;
 use Pingu\User\Entities\User;
 
 class ContentPolicy extends BaseEntityPolicy
 {
-    use HandlesAuthorization;
-
     /**
      * Create access
      *
      * @param  User $user
      * @return bool
      */
-    public function create(User $user, ContentType $type)
+    public function create(?User $user, ?BundleContract $bundle = null)
     {
-        $perm = $this->permName('create '.Str::plural($type->machineName));
+        $perm = 'create '.Str::plural($bundle->getEntity()->machineName);
         return $user->hasPermissionTo($perm);
+    }
+
+    /**
+     * Index access
+     *
+     * @param  User    $user
+     * @param  Entity $content
+     * @return bool
+     */
+    public function index(?User $user)
+    {
+        return $user->hasPermissionTo('view content');
     }
 
     /**
      * View access
      *
      * @param  User    $user
-     * @param  Content $content
+     * @param  Entity $content
      * @return bool
      */
-    public function view(User $user, Content $content)
+    public function view(?User $user, Entity $content)
     {
         if($user == $content->creator) {
             return true;
@@ -44,10 +55,10 @@ class ContentPolicy extends BaseEntityPolicy
      * Edit access
      *
      * @param  User    $user
-     * @param  Content $content
+     * @param  Entity $content
      * @return bool
      */
-    public function edit(User $user, Content $content)
+    public function edit(?User $user, Entity $content)
     {   
         $any = $this->permName('edit any', $content);
         $own = $this->permName('edit own', $content);
@@ -67,7 +78,7 @@ class ContentPolicy extends BaseEntityPolicy
      * @param  Content $content
      * @return bool
      */
-    public function delete(User $user, Content $content)
+    public function delete(?User $user, Entity $content)
     {
         $any = $this->permName('delete any', $content);
         $own = $this->permName('delete own', $content);
@@ -87,7 +98,7 @@ class ContentPolicy extends BaseEntityPolicy
      * @param  Content $content
      * @return string
      */
-    protected function permName(string $action, Content $content)
+    protected function permName(string $action, Entity $content)
     {
         return trim($action).' '.Str::plural($content->content_type->machineName);
     }

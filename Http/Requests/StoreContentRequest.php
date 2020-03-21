@@ -11,7 +11,7 @@ class StoreContentRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(bool $updating)
     {
         $contentType = $this->route()->parameters()['content_type'];
         $rules = [];

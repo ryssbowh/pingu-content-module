@@ -9,7 +9,7 @@ class ContentValidator extends BaseFieldsValidator
     /**
      * @inheritDoc
      */
-    protected function rules(): array
+    protected function rules(bool $updating): array
     {
         return [
             'field_slug.*' => 'string|required|unique_field:'.get_class($this->object).','.$this->object->id

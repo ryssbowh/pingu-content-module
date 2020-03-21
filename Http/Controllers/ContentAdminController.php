@@ -17,7 +17,7 @@ class ContentAdminController extends AdminEntityController
         $types = ContentType::all();
         $available = [];
         foreach ($types as $type) {
-            if (\Auth::user()->can('create '.Str::plural($type->machineName))) {
+            if (\Auth::user()->hasPermissionTo('create '.Str::plural($type->machineName))) {
                 $available[] = $type;
             }
         }
