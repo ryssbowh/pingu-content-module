@@ -35,6 +35,9 @@ class ContentTypePolicy extends BaseEntityPolicy
 
     public function delete(?User $user, Entity $entity)
     {
+        if (!$entity->contents->isEmpty()) {
+            return false;
+        }
         $user = $this->userOrGuest($user);
         return $user->hasPermissionTo('delete '.$entity::friendlyNames());
     }

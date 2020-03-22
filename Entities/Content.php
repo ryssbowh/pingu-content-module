@@ -28,20 +28,29 @@ class Content extends BundledEntity implements HasRevisionsContract
         'created' => ContentCreated::class
     ];
 
+    protected $fillable = ['title', 'slug', 'published'];
+
     protected $with = ['content_type', 'createdBy'];
 
     protected $visible = ['id', 'content_type', 'createdBy', 'created_at', 'updated_at'];
 
-    public $adminListFields = ['field_title'];
+    public $adminListFields = ['title', 'content_type', 'published', 'created_at'];
 
-    public function friendlyFieldTitleValue()
+    public $filterable = ['content_type', 'published'];
+
+    public function friendlyContentTypeAttribute()
     {
-        return $this->field_title[0];
+        return $this->content_type->name;
+    }
+
+    public function friendlyPublishedAttribute()
+    {
+        return $this->published ? 'Yes' : 'No';
     }
 
     public function getRouteKeyName()
     {
-        return 'field_slug';
+        return 'slug';
     }
 
     public function bundleName(): ?string
@@ -73,14 +82,6 @@ class Content extends BundledEntity implements HasRevisionsContract
             return $this->generateSlug($slug, $ignore, false);
         }
         return $slug;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public static function routeSlug(): string
-    {
-        return 'content';
     }
 
     /**

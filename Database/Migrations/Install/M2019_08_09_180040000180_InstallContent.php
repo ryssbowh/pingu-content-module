@@ -29,6 +29,8 @@ class M2019_08_09_180040000180_InstallContent extends Migration
             'contents', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('slug')->nullable();
+                $table->string('title');
+                $table->boolean('published')->default(0);
                 $table->integer('content_type_id')->unsigned()->index();
                 $table->foreign('content_type_id')->references('id')->on('content_types');
                 $table->updatedBy();

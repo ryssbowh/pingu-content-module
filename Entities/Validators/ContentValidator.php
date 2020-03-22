@@ -12,7 +12,8 @@ class ContentValidator extends BaseFieldsValidator
     protected function rules(bool $updating): array
     {
         return [
-            'field_slug.*' => 'string|required|unique_field:'.get_class($this->object).','.$this->object->id
+            'slug.*' => 'string|required|unique:contents,slug,'.$this->object->id,
+            'title' => 'string|required'
         ];
     }
 
@@ -21,8 +22,6 @@ class ContentValidator extends BaseFieldsValidator
      */
     protected function messages(): array
     {
-        return [
-            'field_slug.*.unique_field' => 'Slug :value already exists'
-        ];
+        return [];
     }
 }

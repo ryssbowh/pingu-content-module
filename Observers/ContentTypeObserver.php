@@ -13,6 +13,7 @@ use Pingu\Field\Entities\FieldTextLong;
 use Pingu\Menu\Entities\Menu;
 use Pingu\Menu\Entities\MenuItem;
 use Pingu\Permissions\Entities\Permission;
+use Pingu\Permissions\Exceptions\PermissionDoesNotExist;
 use Pingu\User\Entities\Role;
 
 class ContentTypeObserver
@@ -47,12 +48,26 @@ class ContentTypeObserver
         $pluralName = Str::plural($contentType->machineName);
 
         foreach ($this->perms as $perm) {
-            if ($permission = Permission::findByName($perm.$pluralName)) {
-                $permission->delete();
-            }
+            try {
+                if ($permission = Permission::findByName($perm.$pluralName)) {
+                    $permission->delete();
+                }
+            } catch (PermissionDoesNotExist $e) {}   
         }
         if ($item = MenuItem::findByMachineName('admin-menu.content.create.'.$contentType->machineName)) {
             $item->delete();
+        }
+    }
+
+    /**
+     * Delete all soft deleted content
+     * 
+     * @param ContentType $contentType
+     */
+    public function deleting(ContentType $contentType)
+    {
+        foreach ($contentType->contents()->withTrashed()->get() as $content) {
+            $content->forceDelete();
         }
     }
 
@@ -108,42 +123,6 @@ class ContentTypeObserver
      */
     protected function createDefaultFields(BundleContract $bundle)
     {
-        $titleField = FieldText::create(
-            [
-            'default' => '',
-            'required' => true
-            ]
-        );
-
-        BundleField::create(
-            [
-            'name' => 'Title',
-            'machineName' => 'title',
-            'helper' => 'The title of the content',
-            'cardinality' => 1,
-            'deletable' => 0,
-            'editable' => 0
-            ], $bundle, $titleField
-        );
-
-        $titleField = FieldText::create(
-            [
-            'default' => '',
-            'required' => true
-            ]
-        );
-
-        BundleField::create(
-            [
-            'name' => 'Slug',
-            'machineName' => 'slug',
-            'helper' => 'The slug of the content',
-            'cardinality' => 1,
-            'deletable' => 0,
-            'editable' => 0
-            ], $bundle, $titleField
-        );
-
         $contentField = FieldTextLong::create(
             [
             'default' => '',

@@ -29,17 +29,25 @@ class ContentAdminController extends AdminEntityController
         );
     }
 
-    protected function afterCreateFormCreated(Form $form, Entity $entity)
-    {
-        $group = $form->getElement('field_slug');
-        $group->first()->classes->add('js-dashify');
-        $group->first()->option('data-dashifyfrom', 'field_title');
-    }
-
     protected function performStore(Entity $entity, array $validated)
     {
         $contentType = $this->routeParameter('bundle')->getEntity();
         $entity->content_type()->associate($contentType);
         $entity->saveWithRelations($validated);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function addVariablesToIndexView(array &$with)
+    {
+        $with['createUrl'] = Content::routeSlug().'/create';
+    }
+
+    protected function afterCreateFormCreated(Form $form, Entity $entity)
+    {
+        $field = $form->getElement('slug');
+        $field->classes->add('js-dashify');
+        $field->attribute('data-dashifyfrom', 'title');
     }
 }
