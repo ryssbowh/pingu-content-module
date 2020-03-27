@@ -53,15 +53,6 @@ class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
         $structure = MenuItem::findByMachineName('admin-menu.structure');
         MenuItem::create(
             [
-            'name' => 'Content types',
-            'url' => 'content.admin.contentTypes',
-            'deletable' => 0,
-            'active' => 1,
-            'permission_id' => $viewTypes->id
-            ], $menu, $structure
-        );
-        MenuItem::create(
-            [
             'name' => 'Create',
             'url' => 'content.admin.create',
             'active' => 1,

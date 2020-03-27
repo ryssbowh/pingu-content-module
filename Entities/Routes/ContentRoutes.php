@@ -2,7 +2,7 @@
 
 namespace Pingu\Content\Entities\Routes;
 
-use Pingu\Entity\Support\BundledEntityRoutes;
+use Pingu\Entity\Support\Routes\BundledEntityRoutes;
 
 class ContentRoutes extends BundledEntityRoutes
 {

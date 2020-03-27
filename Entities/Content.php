@@ -11,11 +11,12 @@ use Pingu\Content\Events\ContentDeleted;
 use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
+use Pingu\Entity\Contracts\RenderableContract;
 use Pingu\Entity\Entities\BundledEntity;
 use Pingu\Field\Contracts\HasRevisionsContract;
 use Pingu\Field\Traits\HasRevisions;
 
-class Content extends BundledEntity implements HasRevisionsContract
+class Content extends BundledEntity implements HasRevisionsContract, RenderableContract
 {
     use SoftDeletes,
         CreatedBy,
@@ -37,6 +38,10 @@ class Content extends BundledEntity implements HasRevisionsContract
     public $adminListFields = ['title', 'content_type', 'published', 'created_at'];
 
     public $filterable = ['content_type', 'published'];
+
+    public $descriptiveField = 'title';
+
+    public function render(string $viewMode){}
 
     public function friendlyContentTypeAttribute()
     {
