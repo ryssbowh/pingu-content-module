@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Core\Http\Controllers\BaseController;
-use Pingu\Entity\Entities\Entity;
+use Pingu\Entity\Support\Entity;
 use Pingu\Entity\Http\Controllers\AdminEntityController;
 use Pingu\Forms\Support\Form;
 
@@ -14,21 +14,23 @@ class ContentAdminController extends AdminEntityController
 {
     public function createIndex()
     {
-        $types = ContentType::all();
-        $available = [];
-        foreach ($types as $type) {
-            if (\Auth::user()->hasPermissionTo('create '.Str::plural($type->machineName))) {
-                $available[] = $type;
+        $types = [];
+        foreach (ContentType::all() as $type) {
+            if (\Gate::check('create', Content::class, $type->toBundle())) {
+                $types[] = $type;
             }
         }
         return view('pages.content.create')->with(
             [
-            'types' => $available,
+            'types' => $types,
             'content' => Content::class
             ]
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function performStore(Entity $entity, array $validated)
     {
         $contentType = $this->routeParameter('bundle')->getEntity();
@@ -44,6 +46,9 @@ class ContentAdminController extends AdminEntityController
         $with['createUrl'] = Content::routeSlug().'/create';
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function afterCreateFormCreated(Form $form, Entity $entity)
     {
         $field = $form->getElement('slug');

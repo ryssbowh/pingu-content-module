@@ -6,8 +6,8 @@ use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Entity\Contracts\BundleContract;
-use Pingu\Entity\Entities\Entity;
-use Pingu\Entity\Support\BaseEntityPolicy;
+use Pingu\Entity\Support\Entity;
+use Pingu\Entity\Support\Policies\BaseEntityPolicy;
 use Pingu\User\Entities\User;
 
 class ContentPolicy extends BaseEntityPolicy

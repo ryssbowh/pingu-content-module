@@ -12,21 +12,21 @@ use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\HasMachineName;
 use Pingu\Core\Traits\Models\Revisionnable;
 use Pingu\Core\Traits\Models\UpdatedBy;
-use Pingu\Entity\Entities\Entity;
-use Pingu\Entity\Traits\IsBundle;
+use Pingu\Entity\Support\EntityBundle;
 
-class ContentType extends Entity
+class ContentType extends EntityBundle
 {
     use HasMachineName,
         CreatedBy,
-        UpdatedBy,
-        IsBundle;
+        UpdatedBy;
 
     protected $fillable = ['name', 'machineName','description'];
 
     protected $visible = ['id', 'name', 'machineName','description'];
 
     public $adminListFields = ['name', 'description'];
+
+    public $descriptiveField = 'name';
 
     protected $dispatchesEvents =[
         'deleted' => ContentTypeDeleted::class,
@@ -36,16 +36,22 @@ class ContentType extends Entity
     /**
      * @inheritDoc
      */
+    public function bundleClass(): string
+    {
+        return ContentTypeBundle::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getRouteKeyName()
     {
         return 'machineName';
     }
 
-    public function bundleName(): string
-    {
-        return 'content.'.$this->machineName;
-    }
-
+    /**
+     * @inheritDoc
+     */
     public function getPolicy(): string
     {
         return ContentTypePolicy::class;
@@ -59,21 +65,5 @@ class ContentType extends Entity
     public function contents()
     {
         return $this->hasMany(Content::class);
-    }
-
-    public function createEntity(array $values): Entity
-    {
-        $content = new Content();
-        $content->content_type()->associate($this);
-        $content->creator()->associate(\Auth::user());
-        $content->slug = $content->generateSlug(Str::slug($values['title']));
-        $content->save();
-        $content->saveFieldValues($values);
-        return $content;
-    }
-
-    public static function bundleClass()
-    {
-        return ContentTypeBundle::class;
     }
 }

@@ -35,7 +35,7 @@ class ContentTypeObserver
     {
         $this->createPermissions($contentType);
         $this->createMenuItem($contentType);
-        $this->createDefaultFields($contentType->bundle());
+        $this->createDefaultFields($contentType);
     }
 
     /**
@@ -104,11 +104,12 @@ class ContentTypeObserver
         }
         $pluralName = Str::plural($contentType->machineName);
         $create = Permission::findByName('create '.$pluralName);
+        $bundle = new ContentTypeBundle($contentType);
         
         MenuItem::create(
             [
             'name' => $contentType->name,
-            'url' => Content::uris()->make('create', [$contentType->bundle()], adminPrefix()),
+            'url' => Content::uris()->make('create', [$bundle], adminPrefix()),
             'active' => true,
             'deletable' => false,
             'permission_id' => $create->id
@@ -119,10 +120,11 @@ class ContentTypeObserver
     /**
      * Creates default bundle fields for a content
      * 
-     * @param BundleContract $bundle
+     * @param ContentType $contentType
      */
-    protected function createDefaultFields(BundleContract $bundle)
+    protected function createDefaultFields(ContentType $contentType)
     {
+        $bundle = new ContentTypeBundle($contentType);
         $contentField = FieldTextLong::create(
             [
             'default' => '',

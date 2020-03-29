@@ -3,10 +3,10 @@
 namespace Pingu\Content\Entities\Fields;
 
 use Pingu\Content\Entities\ContentType;
+use Pingu\Entity\Support\FieldRepository\BundledEntityFieldRepository;
 use Pingu\Field\BaseFields\Boolean;
 use Pingu\Field\BaseFields\Model;
 use Pingu\Field\BaseFields\Text;
-use Pingu\Field\Support\FieldRepository\BundledEntityFieldRepository;
 
 class ContentFields extends BundledEntityFieldRepository
 {

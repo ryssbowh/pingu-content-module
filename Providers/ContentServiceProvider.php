@@ -64,7 +64,6 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
         $this->registerEntities($this->entities);
-        ContentTypeBundle::registerAll();
         \Blocks::registerProvider(ContentBlockProvider::class);
     }
 

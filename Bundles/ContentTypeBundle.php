@@ -5,9 +5,9 @@ namespace Pingu\Content\Bundles;
 use Illuminate\Database\Eloquent\Collection;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
-use Pingu\Entity\Support\EntityBundle;
+use Pingu\Entity\Support\Bundle\ModelBundle;
 
-class ContentTypeBundle extends EntityBundle
+class ContentTypeBundle extends ModelBundle
 {
     /**
      * @inheritDoc
@@ -20,7 +20,7 @@ class ContentTypeBundle extends EntityBundle
     /**
      * @inheritDoc
      */
-    public function bundleFriendlyName(): string
+    public function friendlyName(): string
     {
         return $this->entity->name;
     }
@@ -39,5 +39,13 @@ class ContentTypeBundle extends EntityBundle
     public function entities(): Collection
     {
         return $this->entity->contents;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function name(): string
+    {
+        return 'content-'.$this->entity->machineName;
     }
 }

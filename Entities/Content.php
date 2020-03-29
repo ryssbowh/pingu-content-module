@@ -12,7 +12,7 @@ use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
 use Pingu\Entity\Contracts\RenderableContract;
-use Pingu\Entity\Entities\BundledEntity;
+use Pingu\Entity\Support\BundledEntity;
 use Pingu\Field\Contracts\HasRevisionsContract;
 use Pingu\Field\Traits\HasRevisions;
 
@@ -61,7 +61,7 @@ class Content extends BundledEntity implements HasRevisionsContract, RenderableC
     public function bundleName(): ?string
     {
         if ($this->exists and $this->content_type) {
-            return 'content.'.$this->content_type->machineName;
+            return 'content-'.$this->content_type->machineName;
         }
         return null;
     }

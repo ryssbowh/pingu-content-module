@@ -44,7 +44,7 @@ class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
         $content = MenuItem::create(
             [
             'name' => 'Content',
-            'url' => 'content.admin.content',
+            'url' => 'content.admin.index',
             'deletable' => 0,
             'active' => 1,
             'permission_id' => $viewContent->id
@@ -53,8 +53,17 @@ class S2019_08_06_174312548182_InstallContent extends MigratableSeeder
         $structure = MenuItem::findByMachineName('admin-menu.structure');
         MenuItem::create(
             [
+            'name' => 'Content types',
+            'url' => 'content_type.admin.index',
+            'deletable' => 0,
+            'active' => 1,
+            'permission_id' => $viewTypes->id
+            ], $menu, $structure
+        );
+        MenuItem::create(
+            [
             'name' => 'Create',
-            'url' => 'content.admin.create',
+            'url' => '/admin/content/create',
             'active' => 1,
             'deletable' => 0,
             ], $menu, $content
