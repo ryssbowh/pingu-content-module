@@ -22,7 +22,7 @@ class ContentBlockOptions extends BlockOptionsForm
         $contents = $this->block->contentType()->contents->keyBy('id');
         $out = [];
         foreach ($contents as $content) {
-            $out[$content->id] = $content->field_title[0];
+            $out[$content->id] = $content->title;
         }
         return $out;
     }
@@ -45,7 +45,7 @@ class ContentBlockOptions extends BlockOptionsForm
                     'items' => $this->getContents()
                 ]
             ),
-            new Submit()
+            new Submit('_submit')
             ]
         );
         return $fields;

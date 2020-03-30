@@ -2,6 +2,7 @@
 
 namespace Pingu\Content\Entities\Fields;
 
+use Illuminate\Support\Collection;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Entity\Support\FieldRepository\BundledEntityFieldRepository;
 use Pingu\Field\BaseFields\Boolean;
@@ -31,5 +32,10 @@ class ContentFields extends BundledEntityFieldRepository
             ]),
             new Boolean('published')
         ];
+    }
+
+    protected function alterFieldsForForm(Collection $fields, bool $updating)
+    {
+        $fields->forget('content_type');
     }
 }
