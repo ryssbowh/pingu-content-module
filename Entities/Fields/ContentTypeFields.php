@@ -23,6 +23,7 @@ class ContentTypeFields extends BaseFieldRepository
                 'machineName',
                 [
                     'required' => true,
+                    'dashifyFrom' => 'name'
                 ]
             ),
             new Text('description')

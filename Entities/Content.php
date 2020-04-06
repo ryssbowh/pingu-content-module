@@ -7,86 +7,112 @@ use Illuminate\Support\Str;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Policies\ContentPolicy;
 use Pingu\Content\Events\ContentCreated;
+use Pingu\Content\Events\ContentCreating;
 use Pingu\Content\Events\ContentDeleted;
+use Pingu\Content\Events\ContentDeleting;
+use Pingu\Content\Events\ContentSaved;
+use Pingu\Content\Events\ContentSaving;
+use Pingu\Content\Events\ContentUpdated;
+use Pingu\Content\Events\ContentUpdating;
 use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
-use Pingu\Entity\Contracts\RenderableContract;
+use Pingu\Entity\Contracts\HasViewModesContract;
 use Pingu\Entity\Support\BundledEntity;
+use Pingu\Entity\Traits\HasViewModes;
 use Pingu\Field\Contracts\HasRevisionsContract;
 use Pingu\Field\Traits\HasRevisions;
 
-class Content extends BundledEntity implements HasRevisionsContract, RenderableContract
+class Content extends BundledEntity implements HasRevisionsContract, HasViewModesContract
 {
     use SoftDeletes,
         CreatedBy,
         DeletedBy,
         UpdatedBy,
-        HasRevisions;
+        HasRevisions,
+        HasViewModes;
 
+    /**
+     * @inheritDoc
+     */
     protected $dispatchesEvents = [
         'deleted' => ContentDeleted::class,
-        'created' => ContentCreated::class
+        'created' => ContentCreated::class,
+        'creating' => ContentCreating::class,
+        'saving' => ContentSaving::class,
+        'saved' => ContentSaved::class,
+        'deleting' => ContentDeleting::class,
+        'updating' => ContentUpdating::class,
+        'updated' => ContentUpdated::class,
     ];
 
+    /**
+     * @inheritDoc
+     */
     protected $fillable = ['title', 'slug', 'published'];
 
+    /**
+     * @inheritDoc
+     */
     protected $with = ['content_type', 'createdBy'];
 
+    /**
+     * @inheritDoc
+     */
     protected $visible = ['id', 'content_type', 'createdBy', 'created_at', 'updated_at'];
 
+    /**
+     * @inheritDoc
+     */
     public $adminListFields = ['title', 'content_type', 'published', 'created_at'];
 
+    /**
+     * @inheritDoc
+     */
     public $filterable = ['content_type', 'published'];
 
+    /**
+     * @inheritDoc
+     */
     public $descriptiveField = 'title';
 
-    public function render(string $viewMode){}
-
+    /**
+     * Friendly content type mutator
+     * 
+     * @return string
+     */
     public function friendlyContentTypeAttribute()
     {
         return $this->content_type->name;
     }
 
+    /**
+     * Friendly published mutator
+     * 
+     * @return string
+     */
     public function friendlyPublishedAttribute()
     {
         return $this->published ? 'Yes' : 'No';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getRouteKeyName()
     {
         return 'slug';
     }
 
+    /**
+     * @inheritDoc
+     */
     public function bundleName(): ?string
     {
         if ($this->exists and $this->content_type) {
             return 'content-'.$this->content_type->machineName;
         }
         return null;
-    }
-
-    public function generateSlug(?string $slug = null, $ignore = null, $first = true)
-    {
-        if (is_null($slug)) {
-            $slug = Str::slug($this->getBundleFieldValue('title'));
-        }
-
-        if ($model = $this::where(['slug' => $slug])->first()) {
-            if ($ignore and $ignore->id == $model->id) {
-                return $slug;
-            }
-            if ($first) {
-                $slug .= '-1';
-            } else {
-                $elems = explode('-', $slug);
-                $num = $elems[sizeof($elems)-1] + 1;
-                unset($elems[sizeof($elems)-1]);
-                $slug = implode('-', $elems).'-'.$num; 
-            }
-            return $this->generateSlug($slug, $ignore, false);
-        }
-        return $slug;
     }
 
     /**

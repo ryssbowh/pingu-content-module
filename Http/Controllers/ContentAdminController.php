@@ -45,14 +45,4 @@ class ContentAdminController extends AdminEntityController
     {
         $with['createUrl'] = Content::routeSlug().'/create';
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function afterCreateFormCreated(Form $form, Entity $entity)
-    {
-        $field = $form->getElement('slug');
-        $field->classes->add('js-dashify');
-        $field->attribute('data-dashifyfrom', 'title');
-    }
 }

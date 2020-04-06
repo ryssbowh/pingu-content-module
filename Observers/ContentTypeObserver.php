@@ -134,8 +134,8 @@ class ContentTypeObserver
 
         BundleField::create(
             [
-            'name' => 'Content',
-            'machineName' => 'content',
+            'name' => 'Body',
+            'machineName' => 'body',
             'cardinality' => 1,
             'deletable' => 1,
             'editable' => 1

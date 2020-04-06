@@ -20,14 +20,29 @@ class ContentType extends EntityBundle
         CreatedBy,
         UpdatedBy;
 
+    /**
+     * @inheritDoc
+     */
     protected $fillable = ['name', 'machineName','description'];
 
+    /**
+     * @inheritDoc
+     */
     protected $visible = ['id', 'name', 'machineName','description'];
 
+    /**
+     * @inheritDoc
+     */
     public $adminListFields = ['name', 'description'];
 
+    /**
+     * @inheritDoc
+     */
     public $descriptiveField = 'name';
 
+    /**
+     * @inheritDoc
+     */
     protected $dispatchesEvents =[
         'deleted' => ContentTypeDeleted::class,
         'created' => ContentTypeCreated::class

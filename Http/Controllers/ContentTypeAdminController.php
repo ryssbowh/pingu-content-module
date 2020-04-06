@@ -15,14 +15,4 @@ class ContentTypeAdminController extends AdminEntityController
     {
         $form->getElement('machineName')->option('disabled', true);
     }
-
-    /**
-     * @inheritDoc
-     */
-    protected function afterCreateFormCreated(Form $form, Entity $entity)
-    {
-        $field = $form->getElement('machineName');
-        $field->classes->add('js-dashify');
-        $field->attribute('data-dashifyfrom', 'name');
-    }
 }

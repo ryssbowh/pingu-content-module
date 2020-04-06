@@ -7,6 +7,7 @@ use Pingu\Block\Contracts\BlockProviderContract;
 use Pingu\Block\Entities\Block;
 use Pingu\Content\Blocks\ContentBlock;
 use Pingu\Content\Entities\ContentType;
+use Pingu\Content\Renderers\ContentBlockRenderer;
 use Pingu\Forms\Support\Form;
 
 class ContentBlockProvider implements BlockProviderContract
@@ -38,5 +39,10 @@ class ContentBlockProvider implements BlockProviderContract
             $out['content.'.$type->machineName] = $block;
         }
         return $out;
+    }
+
+    public function getRenderer(): string
+    {
+        return ContentBlockRenderer::class;
     }
 }

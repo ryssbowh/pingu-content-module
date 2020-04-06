@@ -31,6 +31,16 @@ class ContentBlock implements BlockContract
         }
     }
 
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function systemView(): string
+    {
+        return 'content@content-block';
+    }
+
     /**
      * Set the content type for this block
      * 
@@ -60,14 +70,6 @@ class ContentBlock implements BlockContract
         return [
             'contentType' => $this->contentType->id
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function render()
-    {
-
     }
 
     /**
@@ -120,7 +122,7 @@ class ContentBlock implements BlockContract
      */
     public function title(): string
     {
-        return $this->content->content_type->name.' : '.$this->content->field_title[0];
+        return $this->content->content_type->name.' : '.$this->content->title;
     }
 
     /**
@@ -153,5 +155,13 @@ class ContentBlock implements BlockContract
     public function provider(): string
     {
         return 'content';
+    }
+
+    public function getViewData(): array
+    {
+        return [
+            'contentType' => $this->contentType,
+            'content' => $this->content
+        ];
     }
 }

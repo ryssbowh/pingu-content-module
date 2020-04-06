@@ -23,7 +23,8 @@ class ContentFields extends BundledEntityFieldRepository
             ]),
             new Text('slug', [
                 'maxLength' => 255,
-                'required' => true
+                'required' => true,
+                'dashifyFrom' => 'title'
             ]),
             new Model('content_type', [
                 'model' => ContentType::class,
