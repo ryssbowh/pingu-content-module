@@ -12,6 +12,9 @@ class ContentBlockRenderer extends BlockRenderer
         parent::__construct($block);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function rendererType(): string
     {
         return 'content';

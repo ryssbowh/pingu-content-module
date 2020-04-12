@@ -35,8 +35,9 @@ class ContentPolicy extends BaseEntityPolicy
     /**
      * Index access
      *
-     * @param  User    $user
-     * @param  Entity $content
+     * @param User    $user
+     * @param Entity $content
+     * 
      * @return bool
      */
     public function index(?User $user)
@@ -47,13 +48,18 @@ class ContentPolicy extends BaseEntityPolicy
     /**
      * View access
      *
-     * @param  User    $user
-     * @param  Entity $content
+     * @param User    $user
+     * @param Entity $content
+     * 
      * @return bool
      */
     public function view(?User $user, Entity $content)
     {
-        if($user == $content->creator) {
+        $user = $this->userOrGuest($user);
+        if (!$content->published and !$user->hasPermissionTo('view unpublished content')) {
+            return false;
+        }
+        if ($user == $content->creator) {
             return true;
         }
         $perm = $this->permName('view any', $content->content_type);
@@ -63,8 +69,9 @@ class ContentPolicy extends BaseEntityPolicy
     /**
      * Edit access
      *
-     * @param  User    $user
-     * @param  Entity $content
+     * @param User    $user
+     * @param Entity $content
+     * 
      * @return bool
      */
     public function edit(?User $user, Entity $content)
@@ -72,10 +79,9 @@ class ContentPolicy extends BaseEntityPolicy
         $any = $this->permName('edit any', $content->content_type);
         $own = $this->permName('edit own', $content->content_type);
 
-        if($user == $content->creator) {
+        if ($user == $content->creator) {
             return $user->hasAnyPermission([$own, $any]);
-        }
-        else{
+        } else {
             return $user->hasPermissionTo($any);   
         }
     }
@@ -92,10 +98,9 @@ class ContentPolicy extends BaseEntityPolicy
         $any = $this->permName('delete any', $content->content_type);
         $own = $this->permName('delete own', $content->content_type);
 
-        if($user == $content->creator) {
+        if ($user == $content->creator) {
             return $user->hasAnyPermission([$own, $any]);
-        }
-        else{
+        } else {
             return $user->hasPermissionTo($any);   
         }
     }
