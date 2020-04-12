@@ -44,6 +44,7 @@ class ContentServiceProvider extends ModuleServiceProvider
      */
     public function boot(Router $router, Gate $gate)
     {
+        $this->registerEntities($this->entities);
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadModuleViewsFrom(__DIR__ . '/../Resources/views', 'content');
@@ -63,7 +64,6 @@ class ContentServiceProvider extends ModuleServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(AuthServiceProvider::class);
-        $this->registerEntities($this->entities);
         \Blocks::registerProvider(ContentBlockProvider::class);
     }
 

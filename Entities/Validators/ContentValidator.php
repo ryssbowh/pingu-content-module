@@ -12,7 +12,7 @@ class ContentValidator extends BaseFieldsValidator
     protected function rules(bool $updating): array
     {
         return [
-            'slug.*' => 'string|required|unique:contents,slug,'.$this->object->id,
+            'slug' => 'string|required|alpha_dash|unique:contents,slug,'.$this->object->id,
             'title' => 'string|required'
         ];
     }
