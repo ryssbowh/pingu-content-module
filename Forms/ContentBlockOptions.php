@@ -37,17 +37,39 @@ class ContentBlockOptions extends BlockOptionsForm
     {
         $fields = $this->model->fields()->toFormElements($this->model, $this->updating);
         $fields = array_merge(
-            $fields, [
-            new Select(
-                'id',
-                [
-                    'label' => $this->block->contentType()->name,
-                    'items' => $this->getContents()
-                ]
-            ),
-            new Submit('_submit')
-            ]
+            [
+                new Select(
+                    'id',
+                    [
+                        'label' => $this->block->contentType()->name,
+                        'items' => $this->getContents()
+                    ]
+                ),
+                new Select(
+                    'viewMode',
+                    [
+                        'label' => 'View mode',
+                        'items' => $this->getViewModes()
+                    ]
+                )
+            ], $fields
         );
+        $fields[] = new Submit('_submit');
         return $fields;
+    }
+
+    /**
+     * Get all view modes for the content type bundle
+     * 
+     * @return array
+     */
+    protected function getViewModes(): array
+    {
+        $bundle = $this->block->contentType()->toBundle();
+        $out = [];
+        foreach (\ViewMode::forObject($bundle) as $viewMode) {
+            $out[$viewMode->id] = $viewMode->name;
+        }
+        return $out;
     }
 }

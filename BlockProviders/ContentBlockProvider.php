@@ -41,8 +41,8 @@ class ContentBlockProvider implements BlockProviderContract
         return $out;
     }
 
-    public function getRenderer(): string
+    public function render(Block $block): string
     {
-        return ContentBlockRenderer::class;
+        return (new ContentBlockRenderer($block->instance()))->render();
     }
 }

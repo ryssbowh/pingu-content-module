@@ -2,7 +2,7 @@
 
 namespace Pingu\Content\Bundles;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Entity\Support\Bundle\ModelBundle;
@@ -22,7 +22,7 @@ class ContentTypeBundle extends ModelBundle
      */
     public function friendlyName(): string
     {
-        return $this->entity->name;
+        return 'Content - '.$this->entity->name;
     }
 
     /**

@@ -13,11 +13,29 @@ use Pingu\Forms\Support\Form;
 
 class ContentBlock implements BlockContract
 {
-    use BlockTrait;
+    use BlockTrait {
+        toArray as traitToArray;
+    }
 
+    /**
+     * @var ContentType
+     */
     protected $contentType;
+
+    /**
+     * @var Block
+     */
     protected $model;
+
+    /**
+     * @var Content
+     */
     protected $content;
+
+    /**
+     * @var ViewMode
+     */
+    protected $viewMode;
 
     /**
      * @inheritDoc
@@ -27,15 +45,24 @@ class ContentBlock implements BlockContract
         $this->model = $model;
         if ($model) {
             $this->contentType = ContentType::find($model->getData('contentType'));
-            $this->content = Content::find($model->getData('id'));
+            $this->content = Content::find($this->getData('id'));
+            $this->viewMode = \ViewMode::get($this->getData('viewMode'));
         }
     }
 
-    public function getContent()
+    /**
+     * Get content associated with this block
+     * 
+     * @return Content
+     */
+    public function getContent(): Content
     {
         return $this->content;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function systemView(): string
     {
         return 'content@content-block';
@@ -102,7 +129,8 @@ class ContentBlock implements BlockContract
     public function getOptionsValidationRules(): array
     {
         return [
-            'id' => 'required|exists:contents'
+            'id' => 'required|exists:contents',
+            'viewMode' => 'required|integer|exists:view_modes,id',
         ];
     }
 
@@ -115,6 +143,11 @@ class ContentBlock implements BlockContract
             'id.required' => 'You must choose a content',
             'id.exists' => 'This content doesn\'t exist'
         ];
+    }
+
+    public function getViewMode()
+    {
+        return $this->viewMode;
     }
 
     /**
@@ -157,11 +190,28 @@ class ContentBlock implements BlockContract
         return 'content';
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function toArray()
+    {
+        return array_merge([
+            'contentType' => $this->contentType,
+            'content' => $this->content,
+            'viewMode' => $this->getViewMode()
+        ], $this->traitToArray());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getViewData(): array
     {
         return [
             'contentType' => $this->contentType,
-            'content' => $this->content
+            'content' => $this->content,
+            'viewMode' => $this->getViewMode(),
+            'fields' => $this->content->bundle()->fieldDisplay()->buildForRendering($this->getViewMode(), $this->content)
         ];
     }
 }

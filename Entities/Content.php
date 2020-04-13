@@ -4,6 +4,7 @@ namespace Pingu\Content\Entities;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Pingu\Content\Bundles\ContentTypeBundle;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Entities\Policies\ContentPolicy;
 use Pingu\Content\Events\ContentCreated;
@@ -17,6 +18,7 @@ use Pingu\Content\Events\ContentUpdating;
 use Pingu\Core\Traits\Models\CreatedBy;
 use Pingu\Core\Traits\Models\DeletedBy;
 use Pingu\Core\Traits\Models\UpdatedBy;
+use Pingu\Entity\Contracts\BundleContract;
 use Pingu\Entity\Contracts\HasViewModesContract;
 use Pingu\Entity\Support\BundledEntity;
 use Pingu\Entity\Traits\HasViewModes;
@@ -107,10 +109,19 @@ class Content extends BundledEntity implements HasRevisionsContract, HasViewMode
     /**
      * @inheritDoc
      */
-    public function bundleName(): ?string
+    public function bundleClass(): string
+    {
+        return ContentTypeBundle::class;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function bundleInstance(): ?BundleContract
     {
         if ($this->exists and $this->content_type) {
-            return 'content-'.$this->content_type->machineName;
+            $class = $this->bundleClass();
+            return new $class($this->content_type);
         }
         return null;
     }
