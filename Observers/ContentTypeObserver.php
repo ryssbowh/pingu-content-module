@@ -125,12 +125,6 @@ class ContentTypeObserver
     protected function createDefaultFields(ContentType $contentType)
     {
         $bundle = new ContentTypeBundle($contentType);
-        $contentField = FieldTextLong::create(
-            [
-            'default' => '',
-            'required' => false
-            ]
-        );
 
         BundleField::create(
             [
@@ -138,8 +132,10 @@ class ContentTypeObserver
             'machineName' => 'body',
             'cardinality' => 1,
             'deletable' => 1,
-            'editable' => 1
-            ], $bundle, $contentField
+            'editable' => 1,
+            'default' => '',
+            'required' => false
+            ], $bundle, new FieldTextLong
         );
     }
 }

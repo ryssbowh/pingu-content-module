@@ -6,11 +6,11 @@ use Illuminate\Support\Str;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Core\Http\Controllers\BaseController;
+use Pingu\Entity\Http\Controllers\EntityCrudContextController;
 use Pingu\Entity\Support\Entity;
-use Pingu\Entity\Http\Controllers\AdminEntityController;
 use Pingu\Forms\Support\Form;
 
-class ContentAdminController extends AdminEntityController
+class ContentAdminController extends EntityCrudContextController
 {
     public function createIndex()
     {
@@ -35,7 +35,7 @@ class ContentAdminController extends AdminEntityController
     {
         $contentType = $this->routeParameter('bundle')->getEntity();
         $entity->content_type()->associate($contentType);
-        $entity->saveWithRelations($validated);
+        $entity->saveFields($validated);
     }
 
     /**

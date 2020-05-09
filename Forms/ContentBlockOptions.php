@@ -35,7 +35,7 @@ class ContentBlockOptions extends BlockOptionsForm
      */
     public function elements(): array
     {
-        $fields = $this->model->fields()->toFormElements($this->model, $this->updating);
+        $fields = $fields = $this->createElementsFromModel($this->model);
         $fields = array_merge(
             [
                 new Select(

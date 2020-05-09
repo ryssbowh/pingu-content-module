@@ -35,8 +35,22 @@ class ContentFields extends BundledEntityFieldRepository
         ];
     }
 
-    protected function alterFieldsForForm(Collection $fields, bool $updating)
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
     {
-        $fields->forget('content_type');
+        return [
+            'slug' => 'string|required|alpha_dash|unique:contents,slug,'.$this->object->id,
+            'title' => 'string|required'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [];
     }
 }

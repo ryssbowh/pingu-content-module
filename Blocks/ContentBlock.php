@@ -9,6 +9,8 @@ use Pingu\Block\Support\Block as BlockTrait;
 use Pingu\Content\Entities\Content;
 use Pingu\Content\Entities\ContentType;
 use Pingu\Content\Forms\ContentBlockOptions;
+use Pingu\Entity\Entities\ViewMode;
+use Pingu\Forms\Support\Fields\Select;
 use Pingu\Forms\Support\Form;
 
 class ContentBlock implements BlockContract
@@ -82,9 +84,9 @@ class ContentBlock implements BlockContract
     /**
      * Get the content type
      * 
-     * @return ContentType
+     * @return ?ContentType
      */
-    public function contentType(): ContentType
+    public function contentType(): ?ContentType
     {
         return $this->contentType;
     }
@@ -110,17 +112,24 @@ class ContentBlock implements BlockContract
     /**
      * @inheritDoc
      */
-    public function createOptionsForm(): Form
+    public function getOptionsFormFields(): array
     {
-        return new ContentBlockOptions($this);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function editOptionsForm(Block $block): Form
-    {
-        return new ContentBlockOptions($this, $block);
+        return [
+            new Select(
+                'id',
+                [
+                    'label' => $this->contentType()->name,
+                    'items' => $this->getContents()
+                ]
+            ),
+            new Select(
+                'viewMode',
+                [
+                    'label' => 'View mode',
+                    'items' => $this->getViewModes()
+                ]
+            )
+        ];
     }
 
     /**
@@ -145,7 +154,12 @@ class ContentBlock implements BlockContract
         ];
     }
 
-    public function getViewMode()
+    /**
+     * View mode getter
+     * 
+     * @return ?ViewMode
+     */
+    public function getViewMode(): ?ViewMode
     {
         return $this->viewMode;
     }
@@ -196,7 +210,7 @@ class ContentBlock implements BlockContract
     public function toArray()
     {
         return array_merge([
-            'contentType' => $this->contentType,
+            'contentType' => $this->contentType(),
             'content' => $this->content,
             'viewMode' => $this->getViewMode()
         ], $this->traitToArray());
@@ -208,10 +222,41 @@ class ContentBlock implements BlockContract
     public function getViewData(): array
     {
         return [
-            'contentType' => $this->contentType,
+            'contentType' => $this->contentType(),
             'content' => $this->content,
             'viewMode' => $this->getViewMode(),
             'fields' => $this->content->bundle()->fieldDisplay()->buildForRendering($this->getViewMode(), $this->content)
         ];
+    }
+
+    /**
+     * Get all view modes for the content type bundle
+     * 
+     * @return array
+     */
+    protected function getViewModes(): array
+    {
+        $bundle = $this->contentType()->toBundle();
+        $out = [];
+        foreach (\ViewMode::forObject($bundle) as $viewMode) {
+            $out[$viewMode->id] = $viewMode->name;
+        }
+        return $out;
+    }
+
+    /**
+     * Get all the contents for a content type as array
+     * indexed by ids.
+     * 
+     * @return array
+     */
+    protected function getContents()
+    {
+        $contents = $this->contentType()->contents->keyBy('id');
+        $out = [];
+        foreach ($contents as $content) {
+            $out[$content->id] = $content->title;
+        }
+        return $out;
     }
 }

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Pingu\Content\Bundles\ContentTypeBundle;
 use Pingu\Content\Entities\ContentType;
-use Pingu\Content\Entities\Policies\ContentPolicy;
 use Pingu\Content\Events\ContentCreated;
 use Pingu\Content\Events\ContentCreating;
 use Pingu\Content\Events\ContentDeleted;
@@ -135,13 +134,4 @@ class Content extends BundledEntity implements HasRevisionsContract, HasViewMode
     {
         return $this->belongsTo(ContentType::class);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPolicy(): string
-    {
-        return ContentPolicy::class;
-    }
-
 }

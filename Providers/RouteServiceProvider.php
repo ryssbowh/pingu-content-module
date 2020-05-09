@@ -66,7 +66,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapAjaxRoutes()
     {
-        Route::prefix('ajax')
+        Route::prefix(ajaxPrefix())
             ->middleware('ajax')
             ->namespace($this->namespace)
             ->group(__DIR__ . '/../Routes/ajax.php');
@@ -83,7 +83,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapAdminRoutes()
     {
         Route::middleware(['web', 'permission:access admin area'])
-            ->prefix('admin')
+            ->prefix(adminPrefix())
             ->namespace($this->namespace)
             ->group(__DIR__ . '/../Routes/admin.php');
     }

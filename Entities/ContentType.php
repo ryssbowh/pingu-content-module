@@ -4,8 +4,9 @@ namespace Pingu\Content\Entities;
 
 use Illuminate\Support\Str;
 use Pingu\Content\Bundles\ContentTypeBundle;
+use Pingu\Content\Context\EditContentTypeContext;
+use Pingu\Content\Context\UpdateContentTypeContext;
 use Pingu\Content\Entities\Content;
-use Pingu\Content\Entities\Policies\ContentTypePolicy;
 use Pingu\Content\Events\ContentTypeCreated;
 use Pingu\Content\Events\ContentTypeDeleted;
 use Pingu\Core\Traits\Models\CreatedBy;
@@ -48,6 +49,8 @@ class ContentType extends EntityBundle
         'created' => ContentTypeCreated::class
     ];
 
+    public static $routeContexts = [UpdateContentTypeContext::class, EditContentTypeContext::class];
+
     /**
      * @inheritDoc
      */
@@ -62,14 +65,6 @@ class ContentType extends EntityBundle
     public function getRouteKeyName()
     {
         return 'machineName';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getPolicy(): string
-    {
-        return ContentTypePolicy::class;
     }
 
     /**

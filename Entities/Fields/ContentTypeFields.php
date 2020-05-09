@@ -29,4 +29,28 @@ class ContentTypeFields extends BaseFieldRepository
             new Text('description')
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function rules(): array
+    {
+        return [
+            'name' => 'required|string',
+            'description' => 'sometimes|string',
+            'machineName' => 'required|unique:content_types,machineName,'.$this->object->id.',id'
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function messages(): array
+    {
+        return [
+            'name.required' => 'Name is required',
+            'machineName.required' => 'Machine Name is required',
+            'machineName.unique' => 'Machine name already exists'
+        ];
+    }
 }
